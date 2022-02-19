@@ -1,21 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 	<head>
-		<style>
-			aside
-			{
-				position:  absolute;
-				left: 1;
-				top: 1;
-				width: 200px;
-				background: rgba(0, 200, 255, 1);
-				border: 2px solid rgba(0,0,0,0.5);
-				border-radius: 4px; padding: 8px;
-				font-family: Calibri, sans-serif;
-			}
-		</style>
+		<link rel="stylesheet" href="{% static 'css/dd.css' %}">
 
-		<script type="text/javascript">
+		<script src="{% static 'js/dd.js' %}"></script>
+
+		 <!-- <script type="text/javascript">
 			//Note for any R11 readers: drag_start, drag_over and drop are the key functions of this document. Most of the rest is styling to make it look nicer.
 			function drag_start(event) {
 				var style = window.getComputedStyle(event.target, null);
@@ -42,7 +33,7 @@
 				event.preventDefault();
 				return false;
 			}
-		</script>
+		</script> -->
 
 		<title>Drag and Drop example</title>
 	</head>
