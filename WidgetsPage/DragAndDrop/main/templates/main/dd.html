@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+			aside
+			{
+				position:  absolute;
+				left: 1;
+				top: 1;
+				width: 200px;
+				background: rgba(0, 200, 255, 1);
+				border: 2px solid rgba(0,0,0,0.5);
+				border-radius: 4px; padding: 8px;
+				font-family: Calibri, sans-serif;
+			}
+		</style>
+
+		<script type="text/javascript">
+			//Note for any R11 readers: drag_start, drag_over and drop are the key functions of this document. Most of the rest is styling to make it look nicer.
+			function drag_start(event) {
+				var style = window.getComputedStyle(event.target, null);
+				var str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY) + ',' + event.target.id;
+				event.dataTransfer.setData("Text", str);
+			}
+
+			function drag_over(event) {
+				event.preventDefault();
+				return false;
+			}
+
+			function drop(event, divId) {
+				var offset = event.dataTransfer.getData("Text").split(',');
+
+				var newBlock = document.createElement('aside');
+				newBlock.innerHTML = "This is a <i>created</i> box!";
+				newBlock.style.background = document.getElementById(offset[2]).style.backgroundColor;
+				newBlock.style.left = (event.clientX + parseInt(offset[0], 10)) + 'px';
+				newBlock.style.top = (event.clientY + parseInt(offset[1], 10)) + 'px';
+
+				document.getElementById(divId).appendChild(newBlock);
+
+				event.preventDefault();
+				return false;
+			}
+		</script>
+
+		<title>Drag and Drop example</title>
+	</head>
+	<body style="font-family: Calibri, sans-serif; background-color: rgb(50,50,50); color: white;">
+		<h1>Examples of Drag and Drop boxes</h1>
+		<div style="background: rgb(100,100,100); height: 100px; border: 2px solid rgb(255,255,255); border-radius: 10px; padding: 8px;">
+			<aside id='blueBox' draggable="true" ondragstart="drag_start(event)">
+				You can drag this box <b>ANYWHERE</b> inside the drop panel!
+			</aside>
+			<aside id='redBox' draggable="true" ondragstart="drag_start(event)" style="left: 250px; background-color: rgb(200,50,50);">
+				You can drag this box too!
+			</aside>
+			<aside id='greenBox' draggable="true" ondragstart="drag_start(event)" style="left: 480px; background-color: rgb(50,200,50);">
+				Also this one!
+			</aside>
+		</div>
+		<br><br><br><br>
+		<h2>Drag boxes here!</h2>
+		<div id="pasteArea" ondragover="drag_over(event)" ondrop="drop(event, this.id)" style="width: 50vw; height: 400px; background: rgba(0, 0, 0, 0.66); border: 2px solid rgb(100,100,100); border-radius: 4px; padding: 8px">
+		</div>
+	</body>
+</html>
