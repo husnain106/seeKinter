@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seeKinter - My project</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+      integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      .wrapper {
+        display: flex;
+        align-items: stretch;
+      }
+
+      #sidebar {
+        border-right: #e7e4e4 solid 2px;
+        min-width: 250px;
+        max-width: 250px;
+        min-height: 100vh;
+      }
+
+      .new-project {
+        margin-top: 30px;
+        height: 70px;
+        position: relative;
+        border-radius: 6px;
+      }
+
+      .new-project-body {
+        height: 70px;
+        position: absolute;
+        bottom: 10px;
+      }
+
+      .new-project-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-left: 15px;
+      }
+
+      .new-project-text {
+        font-size: 14px;
+        font-weight: 400;
+        color: #7d7d7d;
+      }
+
+      .plus {
+        position: absolute;
+        font-size: 22px;
+        right: 20px;
+        bottom: 20px;
+      }
+
+      .new-project-link {
+        color: black;
+      }
+
+      .new-project:hover,
+      .new-project-link:hover {
+        text-decoration: none;
+        color: black;
+        background-color: #eeeeee;
+      }
+
+      .project-view {
+        padding: 100px 100px 100px;
+      }
+
+      .project-card {
+        float: left;
+        margin-right: 30px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- nav bar -->
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="javascript:location.reload();">
+          {% load static %}
+          <img
+            src="{% static '../static/accounts/logo.png' %}"
+            class="logo"
+            alt="seekinter"
+            width="180px"
+        /></a>
+      </div>
+    </nav>
+
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <nav id="sidebar">
+        <div class="sidebar-header">
+          <h3>Bootstrap Sidebar</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+          <p>Dummy Heading</p>
+          <li class="active">
+            <a
+              href="#homeSubmenu"
+              data-toggle="collapse"
+              aria-expanded="false"
+              class="dropdown-toggle"
+              >Home</a
+            >
+            <ul class="collapse list-unstyled" id="homeSubmenu">
+              <li>
+                <a href="#">Home 1</a>
+              </li>
+              <li>
+                <a href="#">Home 2</a>
+              </li>
+              <li>
+                <a href="#">Home 3</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">About</a>
+          </li>
+          <li>
+            <a
+              href="#pageSubmenu"
+              data-toggle="collapse"
+              aria-expanded="false"
+              class="dropdown-toggle"
+              >Pages</a
+            >
+            <ul class="collapse list-unstyled" id="pageSubmenu">
+              <li>
+                <a href="#">Page 1</a>
+              </li>
+              <li>
+                <a href="#">Page 2</a>
+              </li>
+              <li>
+                <a href="#">Page 3</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">Portfolio</a>
+          </li>
+          <li>
+            <a href="#">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div>
+        <!-- start new project -->
+        <div class="card mx-auto new-project" style="width: 18rem">
+          <a href="#" class="new-project-link">
+            <div class="card-body new-project-body">
+              <div class="card-title new-project-title">
+                New project
+                <p class="card-text new-project-text">
+                  Create your Tkinter project
+                </p>
+              </div>
+            </div>
+            <span class="plus">+</span>
+          </a>
+        </div>
+
+        <div class="project-view">
+          <div class="view-bar">All projects:</div>
+          <div class="card project-card" style="width: 18rem">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+
+          <div class="card project-card" style="width: 18rem">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+
+          <div class="card project-card" style="width: 18rem">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- users projects -->
+
+    <!-- {% for item in list %}
+    <div class="card" style="width: 18rem">
+      <img src="..." class="card-img-top" alt="..." />
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">
+          Some quick example text to build on the card title and make up the
+          bulk of the card's content.
+        </p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
+    
+    {% empty %}
+    <div></div>
+    {% endfor %} -->
+  </body>
+</html>

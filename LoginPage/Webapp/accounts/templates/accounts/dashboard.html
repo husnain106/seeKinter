@@ -25,13 +25,6 @@
         font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
       }
 
-      .see {
-        font-size: 27px;
-        color: rgba(0, 119, 255, 0.932);
-        font-family: Comic Sans MS;
-        font-weight: bold;
-      }
-
       .btn {
         background-color: rgba(0, 119, 255, 0.932);
         border-color: rgba(0, 119, 255, 0.932);
@@ -66,7 +59,14 @@
     <!-- nav bar -->
     <nav class="navbar navbar-light bg-light">
       <div class="container-fluid">
-        <a class="navbar-brand"><span class="see">see</span>Kinter</a>
+        <a class="navbar-brand">
+          {% load static %}
+          <img
+            src="{% static '../static/accounts/logo.png' %}"
+            class="logo"
+            alt="seekinter"
+            width="180px"
+        /></a>
 
         <!-- login form -->
         <form class="d-flex" method="POST" action="">
