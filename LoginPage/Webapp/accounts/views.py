@@ -34,8 +34,8 @@ def login(request):
 
     mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
-    user="p73848hs",
-    password="Ali09876",
+    user="USERNAME",
+    password="PASSWORD",
     database="2021_comp10120_r11"
     )
 
@@ -48,8 +48,8 @@ def login(request):
 def signup(request):
     mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
-    user="p73848hs",
-    password="Ali09876",
+    user="USERNAME",
+    password="PASSWORD",
     database="2021_comp10120_r11"
     )
 
