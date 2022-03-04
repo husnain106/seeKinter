@@ -69,7 +69,7 @@
         /></a>
 
         <!-- login form -->
-        <form class="d-flex" method="POST" action="">
+        <form class="d-flex" method="POST" action="/login/">{% csrf_token %}
           <!-- username -->
           <div class="input-group mb-2 mt-2">
             <div class="input-group-append">
@@ -97,7 +97,7 @@
           <div
             class="d-flex justify-content-center mb-2 mt-2 ml-4 login_container"
           >
-            <input class="btn login_btn btn-dark" type="submit" value="Login" />
+            <input class="btn login_btn btn-dark" type="submit" value="Login" name = "action" />
           </div>
         </form>
       </div>
@@ -114,7 +114,7 @@
 
         <!-- signup form -->
         <div class="d-flex justify-content-center form_container">
-          <form method="POST" action="">
+          <form method="POST" action="/signup/">{% csrf_token %}
             <!-- username -->
             <div class="input-group mb-3">
               <div class="input-group-append">
@@ -124,8 +124,8 @@
               </div>
               <input
                 type="text"
-                name="regis_username"
-                placeholder="Username"
+                name="regis_name"
+                placeholder="Full Name"
                 class="form-control"
               />
             </div>
@@ -138,9 +138,9 @@
                 ></span>
               </div>
               <input
-                type="email"
-                name="regis_email"
-                placeholder="Email"
+                type="textl"
+                name="regis_username"
+                placeholder="Username"
                 class="form-control"
               />
             </div>
