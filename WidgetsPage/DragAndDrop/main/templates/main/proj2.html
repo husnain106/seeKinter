@@ -9,6 +9,97 @@
 
     <title>Project</title>
 
+    <script type="text/javascript">
+        // Interface class used to manage the script and I/O
+        class Interface {
+            constructor() {
+                this.widgets = [];
+                this.canvas = new Canvas(700, 700); // Sets default canvas size to 700x700px
+                this.canvas.drawCanvas();
+            }
+            
+            // Adds a widget to the canvas
+            addWidget(width, height, x, y, colour, layer, text) {
+                let temp = new Widget(width, height, x, y, colour, layer, text);
+                this.widgets.push(temp);
+                temp.placeWidget();
+            }
+        }
+        
+        // Canvas class used to make an area for interface editing
+        class Canvas {
+            constructor(width, height) {
+                this.width = width;
+                this.height = height;
+                this.colour = '#FFFFFF'; // Sets default background colour to white
+                this.image = document.createElement("div");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+            
+            // Allows the canvas object to edit its respective HTML element
+            drawCanvas() {
+                this.image.style.overflow = "auto";
+                this.image.style.margin = "0 auto";
+                this.image.style.padding = "20px";
+                this.image.style.resize = "both";
+                //this.image.style.position = "absolute";
+                this.image.style.width = this.width + 'px';
+                this.image.style.height = this.height + 'px';
+                this.image.style.left = '200px';
+                this.image.style.top = '10px';
+                this.image.style.background = this.colour;
+                this.image.style.borderStyle = 'solid';
+            }
+            
+            // Updates the attributes of the canvas object then redraws it
+            update(width, height, colour) {
+                this.width = width;
+                this.height = height;
+                this.colour = colour;
+                this.drawCanvas();
+            }
+        }
+
+        // Widget class used to create interface elements (other types of widget will inherit)
+        class Widget {
+            constructor(width, height, x, y, colour, layer, text) {
+                this.width = width;
+                this.height = height;
+                this.x = x;
+                this.y = y;
+                this.colour = colour;
+                this.layer = layer;
+                this.text = text;
+                this.image = document.createElement("div");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            // Allows the widget object to edit its respective HTML element
+            placeWidget() {
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.width = this.width + 'px';
+                this.image.style.height = this.height + 'px';
+                this.image.style.left = this.x + 'px';
+                this.image.style.top = this.y + 'px';
+                this.image.style.background = this.colour;
+                this.image.innerHTML = this.text;
+            }
+
+            // Updates the attributes of the widget object then redraws it
+            update(width, height, x, y, colour, layer, text) {
+                this.width = width;
+                this.height = height;
+                this.x = x;
+                this.y = y;
+                this.colour = colour;
+                this.layer = layer;
+                this.text = text;
+                this.placeWidget();
+            }
+        }
+    </script>
+
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <!-- Our Custom CSS -->
@@ -189,14 +280,14 @@
             }
         }
 
-        .canvas{
+        /*.canvas{
           border: 2px solid;
           padding: 20px; 
           width: 300px;
           resize: both;
           overflow: auto;   
           margin: 0 auto;
-        }
+        }*/
     </style>
 </head>
 
@@ -210,6 +301,7 @@
 
             <ul class="list-unstyled components">
                 <p contenteditable="true" id="project_name">Project Name</p>
+                <button type="button" onclick="inter = new Interface()">Start Project</button>
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Widgets</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
@@ -221,6 +313,56 @@
                         </li>
                         <li>
                             <a href="#">Widget 3</a>
+                        </li>
+                        <li>
+                            <a href="#label" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Label</a>
+                            <ul class="collapse list-unstyled" id="label">
+                                <li>
+                                    <a href="#">Width
+                                        <input type="text" id="width"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Height
+                                        <input type="text" id="height"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">X Position
+                                        <input type="text" id="x"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Y Position
+                                        <input type="text" id="y"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Colour
+                                        <input type="text" id="colour"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Text
+                                        <input type="text" id="text"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">WidgetID
+                                        <input type="text" id="widgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('width').value, document.getElementById('height').value, document.getElementById('x').value, document.getElementById('y').value, document.getElementById('colour').value, 0, document.getElementById('text').value)">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.widgets[document.getElementById('widgetID').value].update(document.getElementById('width').value, document.getElementById('height').value, document.getElementById('x').value, document.getElementById('y').value, document.getElementById('colour').value, 0, document.getElementById('text').value)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -274,7 +416,7 @@
                 </div>
             </nav>
 
-                <div class="canvas">
+                <div class="canvas" id="widgets">
             
                 </div>
             </div>
