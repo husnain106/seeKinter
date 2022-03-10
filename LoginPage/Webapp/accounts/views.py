@@ -24,8 +24,8 @@ def myProjects(request):
 def login(request):
     def check_login(username, password, users):
         for user_detail in users:
-            if (user_detail[1] == username and user_detail[2].strip() == password.strip()):
-                print("Login succesful, welcome " + user_detail[0])
+            if (user_detail[0] == username and user_detail[2].strip() == password.strip()):
+                print("Login succesful, welcome " + user_detail[1])
                 return True
         return False
     
@@ -34,8 +34,8 @@ def login(request):
 
     mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
-    user="USERNAME",
-    password="PASSWORD",
+    user="p73848hs",
+    password="Ali09876",
     database="2021_comp10120_r11"
     )
 
@@ -48,8 +48,8 @@ def login(request):
 def signup(request):
     mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
-    user="USERNAME",
-    password="PASSWORD",
+    user="p73848hs",
+    password="Ali09876",
     database="2021_comp10120_r11"
     )
 
@@ -133,8 +133,8 @@ def signup(request):
         return (username_format and unique and username_range)
 
     def save(name, username, password):
-        sql = "INSERT INTO user_details (name, username, password) VALUES (%s,%s,%s)"
-        val = (name, username, password)
+        sql = "INSERT INTO user_details (username,name, password) VALUES (%s,%s,%s)"
+        val = (username, name, password)
         mycursor.execute(sql,val)
         mydb.commit()
         print("Sign up successfull")
