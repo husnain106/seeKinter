@@ -42,8 +42,11 @@ def login(request):
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM user_details")
     myresult = mycursor.fetchall()
-    check_login(username, password, myresult)
-    return HttpResponse("""<html><script>window.location.replace('/');</script></html>""")
+    if (check_login(username, password, myresult)):
+        response = redirect("/myprojects")
+        return response
+    return render(request, 'accounts/dashboard.html')
+
 
 def signup(request):
     mydb = mysql.connector.connect(
