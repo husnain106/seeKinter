@@ -16,6 +16,10 @@
 
     <style>
 
+      html, body, #outer-container {
+        height: 100%;
+      }
+
       .navbar {
         padding: 0;
       }
@@ -159,11 +163,22 @@
         width: 14rem;
       }
 
-      h5 {
+      .pojcet-title {
+        background: none;
+        outline: none;
+        border: none;
         text-align: center;
+        width: 180px;
+        height: 32px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+        margin-left: 19px;
       }
 
-     
+      .pojcet-title:hover {
+        cursor: pointer;
+      }
 
       .project-dropdown {
         margin-right: 5px;
@@ -191,10 +206,21 @@
         cursor: pointer;
       }
 
+      .empty {
+        color: rgb(167, 159, 159);
+        font-size: 14px;
+        margin-top: 50px;
+        margin-left: 10px;
+      }
+
     </style>
+
+
   </head>
 
+
   <body>
+    <div id="outer-container">
     <!-- nav bar -->
     <nav class="navbar">
       <div class="container-fluid">
@@ -245,10 +271,10 @@
     <div class="project-view">
       
       <!-- projects -->
-      <div class="card project-card">
+      <!-- <div class="card project-card">
         <a href="#" class="user-project-link">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
+            <input class="pojcet-title" id="title1" value="Card title" disabled>
           </div>
         </a>
 
@@ -259,18 +285,18 @@
             <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
             <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" href="#">Rename</li>
+            <li class="dropdown-item project-item" type ="button" id="rename1" value="1" onclick="rename_projects(value)">Rename</li>
             <li class="dropdown-item project-item" href="#">Duplicate</li>
             <li class="dropdown-item project-item" href="#">Delete</li>
           </ul>
         </div>
-      </div>
+      </div> -->
         
       <!-- other projects -->
-      <div class="card project-card">
+      <!-- <div class="card project-card">
         <a href="#" class="user-project-link">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
+            <input class="pojcet-title" id="title2" value="Card title" disabled>
           </div>
         </a>
 
@@ -278,10 +304,10 @@
           <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           </button>
           <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
-            <li><a class="dropdown-item project-item" href="#" target="_self">Open</a></li>
-            <li><a class="dropdown-item project-item" href="#" target="_blank">Open in new tab</a></li>
+            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
+            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" href="#">Rename</li>
+            <li class="dropdown-item project-item" type ="button" id="rename1" value="2" onclick="rename_projects(value)">Rename</li>
             <li class="dropdown-item project-item" href="#">Duplicate</li>
             <li class="dropdown-item project-item" href="#">Delete</li>
           </ul>
@@ -292,7 +318,7 @@
       <div class="card project-card">
         <a href="#" class="user-project-link">
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
+            <input class="pojcet-title" id="title3" value="Card title" disabled>
           </div>
         </a>
 
@@ -300,24 +326,52 @@
           <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           </button>
           <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
-            <li><a class="dropdown-item project-item" href="#" target="_self">Open</a></li>
-            <li><a class="dropdown-item project-item" href="#" target="_blank">Open in new tab</a></li>
+            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
+            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" href="#">Rename</li>
+            <li class="dropdown-item project-item" type ="button" id="rename3" value="3" onclick="rename_projects(value)">Rename</li>
+            <li class="dropdown-item project-item" href="#">Duplicate</li>
+            <li class="dropdown-item project-item" href="#">Delete</li>
+          </ul>
+        </div>
+      </div> -->
+
+
+      {% for item in userprojects %}
+      
+      <div class="card project-card">
+        <a href="#" class="user-project-link">
+          <div class="card-body">
+            <input disabled class="pojcet-title" id="title{{item.id}}" value={{item.name}}>
+          </div>
+        </a>
+
+        <div class="dropdown">
+          <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
+            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
+            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li class="dropdown-item project-item" type ="button" id="rename{{item.id}}" value={{item.id}} onclick="rename_projects(value)">Rename</li>
             <li class="dropdown-item project-item" href="#">Duplicate</li>
             <li class="dropdown-item project-item" href="#">Delete</li>
           </ul>
         </div>
       </div>
+    
+      {% empty %}
+
+      <div class="empty">
+        <div>You don't have any projects.</div><br>
+        <div>Create a new project to start from scratch.</div>
+      </div>
+
+      {% endfor %}
+
+
 
     </div>
-
-
-
-
-
-
-
 
 
 
@@ -325,24 +379,11 @@
      
     <!-- users projects -->
 
-    <!-- {% for item in list %}
-    <div class="card" style="width: 18rem">
-      <img src="..." class="card-img-top" alt="..." />
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
-      </div>
     
-    {% empty %}
-    <div></div>
-    {% endfor %} -->
 
     </div>
-    
+  </div>
+
     <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
@@ -350,5 +391,42 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+      function rename_projects(id) {
+        console.log(id);
+
+        var cardName = document.getElementById("title" + id);
+        console.log(cardName);
+        cardName.disabled="";
+        cardName.focus();
+
+        function save_name(id) {
+
+          var outer = document.getElementById('outer-container')
+            outer.addEventListener("click", handler1, false);
+            function handler1(e) {
+              var cardName = document.getElementById('title' + id)
+              if(e.target != cardName) {
+                console.log('You clicked outside');
+                cardName.disabled="disabled";
+                outer.removeEventListener("click", handler1, false);
+
+              } else {
+                // pass
+              }   
+            }
+        }
+
+        setTimeout(function () {
+          save_name(id);
+        }, 500);
+        
+      }
+      
+    </script>
+    
+    
   </body>
 </html>
