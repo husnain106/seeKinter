@@ -1,16 +1,24 @@
 from email import message
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-
 from django.contrib.auth.forms import UserCreationForm
-
 from django.contrib.auth import authenticate, login, logout
 import string
 import mysql.connector
+from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import never_cache
+
+logged_in = False
 
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
-    return render(request, 'accounts/dashboard.html')
+    global logged_in
+    if logged_in:
+            return redirect('/myprojects')
+    else:
+        return render(request, 'accounts/dashboard.html')
 
 def helpPage(request):
     return render(request, 'accounts/help.html')
@@ -18,34 +26,57 @@ def helpPage(request):
 def aboutPage(request):
     return render(request, 'accounts/about.html')
 
+@never_cache
 def myProjects(request):
-    return render(request, 'accounts/myprojects.html')
+    if logged_in:
+        return render(request, 'accounts/myprojects.html')
+    else:
+        return render(request, 'accounts/login.html')
 
+@cache_control(no_cache=True, must_revalidate=True)
+@never_cache
+def logout(request):
+    global logged_in
+    if logged_in:
+        logged_in = False
+        return render(request, 'accounts/dashboard.html')
+
+
+
+# @unauthenticated_user
+@never_cache
 def login(request):
-    def check_login(username, password, users):
-        for user_detail in users:
-            if (user_detail[0] == username and user_detail[2].strip() == password.strip()):
-                print("Login succesful, welcome " + user_detail[1])
-                return True
-        return False
-    
-    username = request.POST.get('login_username')
-    password = request.POST.get('login_password')
+    global uname
+    global logged_in
+    if logged_in:
+            return redirect('/myprojects')
+    else:
+        def check_login(username, password, users):
+            for user_detail in users:
+                if (user_detail[0] == username and user_detail[2].strip() == password.strip()):
+                    print("Login succesful, welcome " + user_detail[1])
+                    return True
+            return False
+        
+        username = request.POST.get('login_username')
+        password = request.POST.get('login_password')
 
-    mydb = mysql.connector.connect(
-    host="dbhost.cs.man.ac.uk",
-    user="p73848hs",
-    password="Ali09876",
-    database="2021_comp10120_r11"
-    )
+        mydb = mysql.connector.connect(
+        host="dbhost.cs.man.ac.uk",
+        user="p73848hs",
+        password="Ali09876",
+        database="2021_comp10120_r11"
+        )
 
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM user_details")
-    myresult = mycursor.fetchall()
-    if (check_login(username, password, myresult)):
-        response = redirect("/myprojects")
-        return response
-    return render(request, 'accounts/dashboard.html')
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT * FROM user_details")
+        myresult = mycursor.fetchall()
+        if (check_login(username, password, myresult)):
+            response = redirect("/myprojects")
+            logged_in = True
+            uname = username
+            return response
+        return render(request, 'accounts/dashboard.html')
 
 
 def signup(request):

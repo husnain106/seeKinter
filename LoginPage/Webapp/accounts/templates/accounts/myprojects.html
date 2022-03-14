@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,6 +12,10 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+
+    <script type="text/javascript">
+      window.location.replace(url);
+    </script>
 
   
 
@@ -242,7 +247,7 @@
             <h6 class="dropdown-header">123456789123456@xxx.com</h6>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item account-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item account-item" href="#">Log out</a></li>
+            <li><a class="dropdown-item account-item" href="{% url 'logout'%}">Logout</a></li>
           </ul>
         </div>
       </div>  
