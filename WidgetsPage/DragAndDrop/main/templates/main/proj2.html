@@ -20,7 +20,7 @@
             
             // Adds a widget to the canvas
             addWidget(width, height, x, y, colour, layer, text) {
-                let temp = new Widget(width, height, x, y, colour, layer, text);
+                let temp = new Widget(width, height, x, y, colour, layer, text, this.canvas);
                 this.widgets.push(temp);
                 temp.placeWidget();
             }
@@ -58,11 +58,15 @@
                 this.colour = colour;
                 this.drawCanvas();
             }
+
+            getPosition() {
+                return this.image.getBoundingClientRect();
+            }
         }
 
         // Widget class used to create interface elements (other types of widget will inherit)
         class Widget {
-            constructor(width, height, x, y, colour, layer, text) {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
                 this.width = width;
                 this.height = height;
                 this.x = x;
@@ -70,12 +74,15 @@
                 this.colour = colour;
                 this.layer = layer;
                 this.text = text;
+                this.canvas = canvas;
                 this.image = document.createElement("div");
                 document.getElementById("widgets").appendChild(this.image);
             }
 
             // Allows the widget object to edit its respective HTML element
             placeWidget() {
+                let pos = this.canvas.getPosition();
+                alert(pos.left);
                 this.image.style.resize = "none";
                 this.image.style.position = "absolute";
                 this.image.style.width = this.width + 'px';
