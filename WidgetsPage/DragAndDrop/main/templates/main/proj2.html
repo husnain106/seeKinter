@@ -20,9 +20,15 @@
             
             // Adds a widget to the canvas
             addWidget(width, height, x, y, colour, layer, text) {
-                let temp = new Widget(width, height, x, y, colour, layer, text, this.canvas);
-                this.widgets.push(temp);
-                temp.placeWidget();
+                // Checks if valid position and size is provided
+                if ((parseInt(width) + parseInt(x) > parseInt(this.canvas.width))||(parseInt(height) + parseInt(y) > parseInt(this.canvas.height))||(x < 0)||(y < 0)) {
+                    alert("Please provide a position and size within the size of the canvas.")
+                } else {
+                    // Otherwise will create the widget
+                    let temp = new Widget(width, height, x, y, colour, layer, text, this.canvas);
+                    this.widgets.push(temp);
+                    temp.placeWidget();
+                }  
             }
         }
         
@@ -39,10 +45,9 @@
             // Allows the canvas object to edit its respective HTML element
             drawCanvas() {
                 this.image.style.overflow = "auto";
-                this.image.style.margin = "0 auto";
+                //this.image.style.margin = "0 auto";
                 this.image.style.padding = "20px";
-                this.image.style.resize = "both";
-                //this.image.style.position = "absolute";
+                //this.image.style.resize = "both";
                 this.image.style.width = this.width + 'px';
                 this.image.style.height = this.height + 'px';
                 this.image.style.left = '200px';
@@ -59,6 +64,7 @@
                 this.drawCanvas();
             }
 
+            // Returns the rectangle associated with the canvas element
             getPosition() {
                 return this.image.getBoundingClientRect();
             }
@@ -87,22 +93,28 @@
                 this.image.style.position = "absolute";
                 this.image.style.width = this.width + 'px';
                 this.image.style.height = this.height + 'px';
-                this.image.style.left = this.x + 'px';
-                this.image.style.top = this.y + 'px';
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(parseInt(pos.top) + parseInt(this.y)) + 'px';
                 this.image.style.background = this.colour;
                 this.image.innerHTML = this.text;
             }
 
             // Updates the attributes of the widget object then redraws it
             update(width, height, x, y, colour, layer, text) {
-                this.width = width;
-                this.height = height;
-                this.x = x;
-                this.y = y;
-                this.colour = colour;
-                this.layer = layer;
-                this.text = text;
-                this.placeWidget();
+                // Checks if valid position and size is provided
+                if ((parseInt(width) + parseInt(x) > parseInt(this.canvas.width))||(parseInt(height) + parseInt(y) > parseInt(this.canvas.height))||(x < 0)||(y < 0)) {
+                    alert("Please provide a position and size within the size of the canvas.")
+                } else {
+                    // Otherwise will update the widget
+                    this.width = width;
+                    this.height = height;
+                    this.x = x;
+                    this.y = y;
+                    this.colour = colour;
+                    this.layer = layer;
+                    this.text = text;
+                    this.placeWidget();
+                }
             }
         }
     </script>
@@ -310,7 +322,7 @@
                 <p contenteditable="true" id="project_name">Project Name</p>
                 <button type="button" onclick="inter = new Interface()">Start Project</button>
                 <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Widgets</a>
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Add Widgets</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
                             <a href="#">Widget 1</a>
@@ -319,7 +331,7 @@
                             <a href="#">Widget 2</a>
                         </li>
                         <li>
-                            <a href="#">Widget 3</a>
+                            <a href="#">Button</a>
                         </li>
                         <li>
                             <a href="#label" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Label</a>
