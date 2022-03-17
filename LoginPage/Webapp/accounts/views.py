@@ -7,6 +7,7 @@ import string
 import mysql.connector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.cache import never_cache
+from django.contrib.auth.hashers import make_password, check_password
 
 logged_in = False
 
@@ -53,7 +54,7 @@ def login(request):
     else:
         def check_login(username, password, users):
             for user_detail in users:
-                if (user_detail[0] == username and user_detail[2].strip() == password.strip()):
+                if (user_detail[0] == username and check_password(password.strip(), user_detail[2].strip())):
                     print("Login succesful, welcome " + user_detail[1])
                     return True
             return False
@@ -194,5 +195,6 @@ def signup(request):
         print("password is in incorrect format")
     
     if namecheck(name) and usernamecheck(username) and passwordcheck(pass1,pass2):
+        pass1 = make_password(pass1)
         save(name, username, pass1)
     return HttpResponse("""<html><script>window.location.replace('/');</script></html>""")
