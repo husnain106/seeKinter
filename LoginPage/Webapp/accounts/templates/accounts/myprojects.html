@@ -21,6 +21,13 @@
 
     <style>
 
+      /* * {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      } */
+
       html, body, #outer-container {
         height: 100%;
       }
@@ -142,8 +149,8 @@
       .project-view {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
-        margin-left: 170px;
+        /* justify-content: center; */
+        margin-left: 305px;
         margin-right: 170px;
         padding: 0px 100px 0px 100px;
       }
@@ -274,93 +281,30 @@
     <!-- show all projects -->
     <div class="view-bar">All projects:</div>
     <div class="project-view">
-      
-      <!-- projects -->
-      <!-- <div class="card project-card">
-        <a href="#" class="user-project-link">
-          <div class="card-body">
-            <input class="pojcet-title" id="title1" value="Card title" disabled>
-          </div>
-        </a>
-
-        <div class="dropdown">
-          <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          </button>
-          <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
-            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
-            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" type ="button" id="rename1" value="1" onclick="rename_projects(value)">Rename</li>
-            <li class="dropdown-item project-item" href="#">Duplicate</li>
-            <li class="dropdown-item project-item" href="#">Delete</li>
-          </ul>
-        </div>
-      </div> -->
-        
-      <!-- other projects -->
-      <!-- <div class="card project-card">
-        <a href="#" class="user-project-link">
-          <div class="card-body">
-            <input class="pojcet-title" id="title2" value="Card title" disabled>
-          </div>
-        </a>
-
-        <div class="dropdown">
-          <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          </button>
-          <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
-            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
-            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" type ="button" id="rename1" value="2" onclick="rename_projects(value)">Rename</li>
-            <li class="dropdown-item project-item" href="#">Duplicate</li>
-            <li class="dropdown-item project-item" href="#">Delete</li>
-          </ul>
-        </div>
-      </div>
-        
-
-      <div class="card project-card">
-        <a href="#" class="user-project-link">
-          <div class="card-body">
-            <input class="pojcet-title" id="title3" value="Card title" disabled>
-          </div>
-        </a>
-
-        <div class="dropdown">
-          <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          </button>
-          <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
-            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
-            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" type ="button" id="rename3" value="3" onclick="rename_projects(value)">Rename</li>
-            <li class="dropdown-item project-item" href="#">Duplicate</li>
-            <li class="dropdown-item project-item" href="#">Delete</li>
-          </ul>
-        </div>
-      </div> -->
 
 
       {% for item in userprojects %}
       
-      <div class="card project-card">
-        <a href="#" class="user-project-link">
-          <div class="card-body">
-            <input disabled class="pojcet-title" id="title{{item.id}}" value={{item.name}}>
+      <div class='card project-card' id='project{{item.id}}'>
+        <!-- send data using url -->
+        <!-- when doubleclick, redirect to myprojects/file/projectId -->
+        <div class='user-project-link' type='button' id='file/{{item.id}}' ondblclick="window.location=id">
+          <div class='card-body'>
+            <input disabled class='pojcet-title' id='title{{item.id}}' value={{item.name}}>
           </div>
-        </a>
+        </div>
 
-        <div class="dropdown">
-          <button class="dropdown-toggle project-dropdown" type="button" id="projectDropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+        <div class='dropdown'>
+          <button class='dropdown-toggle project-dropdown' type='button' id='projectDropdown1' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           </button>
-          <ul class="dropdown-menu project-menu" aria-labelledby="projectDropdown1">
-            <li><a class="dropdown-item project-item" href="../help" target="_self">Open</a></li>
-            <li><a class="dropdown-item project-item" href="../help" target="_blank">Open in new tab</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li class="dropdown-item project-item" type ="button" id="rename{{item.id}}" value={{item.id}} onclick="rename_projects(value)">Rename</li>
-            <li class="dropdown-item project-item" href="#">Duplicate</li>
-            <li class="dropdown-item project-item" href="#">Delete</li>
+          <ul class='dropdown-menu project-menu' aria-labelledby='projectDropdown1'>
+            <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_self'>Open</a></li>
+            <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_blank'>Open in new tab</a></li>
+            <li><hr class='dropdown-divider'></li>
+            <li class='dropdown-item project-item' type ='button' id='rename{{item.id}}' value={{item.id}} onclick='rename_projects(value)'>Rename</li>
+            <li class='dropdown-item project-item' type ='button' id='copy{{item.id}}' value={{item.id}} onclick='copy_projects(value)'>Duplicate</li>
+            <li class='dropdown-item project-item' type ='button' id='delete{{item.id}}' value={{item.id}} onclick='delete_projects(value)'>Delete</li>
           </ul>
         </div>
       </div>
@@ -377,15 +321,6 @@
 
 
     </div>
-
-
-
-
-     
-    <!-- users projects -->
-
-    
-
     </div>
   </div>
 
@@ -399,22 +334,20 @@
 
 
     <script type="text/javascript">
-      function rename_projects(id) {
-        console.log(id);
 
+      function rename_projects(id) {
         var cardName = document.getElementById("title" + id);
-        console.log(cardName);
         cardName.disabled="";
         cardName.focus();
 
         function save_name(id) {
 
+          // if click outside the input box, save the title automatically
           var outer = document.getElementById('outer-container')
             outer.addEventListener("click", handler1, false);
             function handler1(e) {
               var cardName = document.getElementById('title' + id)
               if(e.target != cardName) {
-                console.log('You clicked outside');
                 cardName.disabled="disabled";
                 outer.removeEventListener("click", handler1, false);
 
@@ -424,10 +357,51 @@
             }
         }
 
+        // after 0.5s, execute save_name, add event listener
         setTimeout(function () {
           save_name(id);
         }, 500);
         
+      }
+
+
+      function delete_projects(id) {
+        var box = document.getElementById("project" + id);
+        box.remove();
+      }
+
+      
+      function copy_projects(id) {
+        // get the largest id of the projects, then the id of the copy is the largest + 1
+        titles = document.getElementsByClassName('pojcet-title')
+        var copyId = parseInt(titles[titles.length - 1].id.slice(5,)) + 1;
+        console.log(copyId);
+        var projectTitle = document.getElementById("title" + id).value;
+        
+        // add copy project
+        var dom = document.createElement("div");
+        var content = document.getElementsByClassName('project-view')[0];
+        content.appendChild(dom);
+
+        // change url? generate new url of the copy?
+        dom.innerHTML ="<div class='card project-card' id='project"+copyId+ "'> <a href='#' class='user-project-link'> \
+          <div class='card-body'> \
+          <input disabled class='pojcet-title' id='title"+copyId+"' value='"+projectTitle+" (copy)' /> \
+          </div> \
+          </a> \
+        <div class='dropdown'> \
+          <button class='dropdown-toggle project-dropdown' type='button' id='projectDropdown1' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'></button> \
+          <ul class='dropdown-menu project-menu' aria-labelledby='projectDropdown1'> \
+            <li><a class='dropdown-item project-item' href='#' target='_self'>Open</a></li> \
+            <li><a class='dropdown-item project-item' href='#' target='_blank'>Open in new tab</a></li> \
+            <li><hr class='dropdown-divider' /></li> \
+            <li class='dropdown-item project-item' type ='button' id='rename"+copyId+"' value='"+copyId+"' onclick='rename_projects(value)'>Rename</li> \
+            <li class='dropdown-item project-item' type ='button' id='copy"+copyId+"' value='"+copyId+"' onclick='copy_projects(value)'>Duplicate</li> \
+            <li class='dropdown-item project-item' type ='button' id='delete"+copyId+"' value='"+copyId+"' onclick='delete_projects(value)'>Delete</li> \
+          </ul> \
+        </div> \
+      </div> \
+      "
       }
       
     </script>
