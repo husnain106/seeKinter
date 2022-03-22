@@ -25,12 +25,23 @@
                     alert("Please provide a position and size within the size of the canvas.")
                 } else {
                     // Otherwise will create the widget
+                    alert(widgetType);
                     switch (widgetType) {
                         // Chooses which type of widget to create
                         case "Label":
-                            let temp = new Label(width, height, x, y, colour, layer, text, this.canvas);
-                            this.widgets.push(temp);
-                            temp.placeWidget();
+                            let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempLabel);
+                            tempLabel.placeWidget();
+                            break;
+
+                        case "Button":
+                            let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempButton);
+                            tempButton.placeWidget();
+                            break;
+
+                        default:
+                            alert("oh dear");
                             break;
                     }   
                 }  
@@ -54,7 +65,14 @@
                 this.image.style.height = this.height + 'px';
                 this.image.style.background = this.colour;
                 this.image.style.borderStyle = 'solid';
-                this.image.style.margin = '0 auto';
+                //this.image.style.margin = '0 auto'; <- This can't be done
+                /*
+                NOTE:
+                The canvas can't be centered, otherwise the absolute values
+                we have provided the widget placement algorithm may behave
+                in unexpected ways, and could cause issues when resizing
+                the canvas or the page.
+                */
             }
             
             // Updates the attributes of the canvas object then redraws it
@@ -93,7 +111,7 @@
                 this.image.style.width = this.width + 'px';
                 this.image.style.height = this.height + 'px';
                 this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
-                this.image.style.top = String(154 + parseInt(this.y)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
                 /*
                 NOTE:
                 154 is a static value we are using rather than the canvas' rectangle's position.
@@ -106,6 +124,7 @@
 
             // Updates the attributes of the widget object then redraws it
             update(width, height, x, y, colour, layer, text) {
+                alert('hi');
                 // Checks if valid position and size is provided
                 if ((parseInt(width) + parseInt(x) > parseInt(this.canvas.width))||(parseInt(height) + parseInt(y) > parseInt(this.canvas.height))||(x < 0)||(y < 0)) {
                     alert("Please provide a position and size within the size of the canvas.")
@@ -354,7 +373,54 @@
                             <a href="#">Widget 2</a>
                         </li>
                         <li>
-                            <a href="#">Button</a>
+                            <a href="#button" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Button</a>
+                            <ul class="collapse list-unstyled" id="button">
+                                <li>
+                                    <a href="#">Width
+                                        <input type="text" id="buttonWidth"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Height
+                                        <input type="text" id="buttonHeight"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">X Position
+                                        <input type="text" id="buttonX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Y Position
+                                        <input type="text" id="buttonY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Colour
+                                        <input type="text" id="buttonColour"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Text
+                                        <input type="text" id="buttonText"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">WidgetID
+                                        <input type="text" id="buttonWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value, 'Button')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.widgets[document.getElementById('buttonWidgetID').value].update(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <a href="#label" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Label</a>
@@ -405,6 +471,31 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#canvasEdit" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Edit Canvas</a>
+                    <ul class="collapse list-unstyled" id="canvasEdit">
+                        <li>
+                            <a href="#">Width
+                                <input type="text" id="canvasWidth"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">Height
+                                <input type="text" id="canvasHeight"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">Colour
+                                <input type="text" id="canvasColour"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <button type="button" onclick="inter.canvas.update(document.getElementById('canvasWidth').value, document.getElementById('canvasHeight').value, document.getElementById('canvasColour').value)">Update</button>
+                            </a>
                         </li>
                     </ul>
                 </li>
