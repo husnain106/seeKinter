@@ -1,4 +1,5 @@
 from email import message
+import imp
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
@@ -8,6 +9,7 @@ import mysql.connector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.hashers import make_password, check_password
+
 
 logged_in = False
 
@@ -29,10 +31,20 @@ def aboutPage(request):
 
 @never_cache
 def myProjects(request):
+    # testing data, context should be a dictionary
+    userprojects = [{'name': 'title1', 'url': '#', 'id': 1},
+                    {'name': 'title2', 'url': '#', 'id': 2},
+                    {'name': 'title3', 'url': '#', 'id': 3},
+                    ]
+    context = {'userprojects': userprojects}
+
     if logged_in:
-        return render(request, 'accounts/myprojects.html')
+        return render(request, 'accounts/myprojects.html', context)
     else:
         return render(request, 'accounts/login.html')
+
+
+    
 
 @cache_control(no_cache=True, must_revalidate=True)
 @never_cache
@@ -43,6 +55,12 @@ def logout(request):
         return render(request, 'accounts/dashboard.html')
 
 
+def file(request, param):
+    
+    print("projectId is " + param)
+    return render(request, 'accounts/help.html') # redirect to a dummy template
+
+
 
 # @unauthenticated_user
 @never_cache
@@ -50,7 +68,7 @@ def login(request):
     global uname
     global logged_in
     if logged_in:
-            return redirect('/myprojects')
+        return redirect('/myprojects')
     else:
         def check_login(username, password, users):
             for user_detail in users:
