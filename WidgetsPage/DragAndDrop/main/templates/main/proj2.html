@@ -39,6 +39,24 @@
                             tempButton.placeWidget();
                             break;
 
+                        case "Checkbox":
+                            let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempCheckBox);
+                            tempCheckBox.placeWidget();
+                            break;
+
+                        case "Radiobutton":
+                            let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempRadioButton);
+                            tempRadioButton.placeWidget();
+                            break;
+
+                        case "Textbox":
+                            let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempTextBox);
+                            tempTextBox.placeWidget();
+                            break;
+
                         default:
                             alert("oh dear");
                             break;
@@ -64,7 +82,8 @@
                 this.image.style.height = this.height + 'px';
                 this.image.style.background = this.colour;
                 this.image.style.borderStyle = 'solid';
-                //this.image.style.margin = '0 auto'; <- This can't be done
+                this.image.style.position = 'absolute';
+                this.image.style.top = '150px';
                 /*
                 NOTE:
                 The canvas can't be centered, otherwise the absolute values
@@ -122,7 +141,6 @@
 
             // Updates the attributes of the widget object then redraws it
             update(width, height, x, y, colour, layer, text) {
-                alert('hi');
                 // Checks if valid position and size is provided
                 if ((parseInt(width) + parseInt(x) > parseInt(this.canvas.width))||(parseInt(height) + parseInt(y) > parseInt(this.canvas.height))||(x < 0)||(y < 0)) {
                     alert("Please provide a position and size within the size of the canvas.")
@@ -155,6 +173,74 @@
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.image = document.createElement("button");
                 document.getElementById("widgets").appendChild(this.image);
+            }
+        }
+
+        // Check box widget class
+        class CheckBox extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.image = document.createElement("input");
+                this.image.setAttribute("type", "checkbox");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            /*
+            This method uses polymorphism to allow for reuse of code
+            whilst still adapting to the needs of the checkbox class.
+            */
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+            }
+        }
+
+        // Radio button widget class
+        class RadioButton extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.image = document.createElement("input");
+                this.image.setAttribute("type", "radio");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            /*
+            This method uses polymorphism to allow for reuse of code
+            whilst still adapting to the needs of the radiobutton class.
+            */
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+            }
+        }
+
+        // Text box widget class
+        class TextBox extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.image = document.createElement("textarea");
+                this.image.setAttribute("type", "text");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            /*
+            This method uses polymorphism to allow for reuse of code
+            whilst still adapting to the needs of the text box class.
+            */
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.width = this.width + 'px';
+                this.image.style.height = this.height + 'px';
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
             }
         }
     </script>
@@ -368,69 +454,7 @@
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Add Widgets</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="#">Widget 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Widget 2</a>
-                        </li>
-                        <li>
-                            <a href="#button" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Button</a>
-                            <ul class="collapse list-unstyled" id="button">
-                                <li>
-                                    <a href="#">Width
-                                        <br>
-                                        <input type="text" id="buttonWidth"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Height
-                                        <br>
-                                        <input type="text" id="buttonHeight"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">X Position
-                                        <br>
-                                        <input type="text" id="buttonX"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Y Position
-                                        <br>
-                                        <input type="text" id="buttonY"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Colour
-                                        <br>
-                                        <input type="text" id="buttonColour"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">Text
-                                        <br>
-                                        <input type="text" id="buttonText"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">WidgetID
-                                        <br>
-                                        <input type="text" id="buttonWidgetID"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <button type="button" onclick="inter.addWidget(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value, 'Button')">Place</button>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <button type="button" onclick="inter.widgets[document.getElementById('buttonWidgetID').value].update(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value)">Update</button>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        <!-- HTML for Label widget on sidebar -->
                         <li>
                             <a href="#label" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Label</a>
                             <ul class="collapse list-unstyled" id="label">
@@ -488,6 +512,178 @@
                                 </li>
                             </ul>
                         </li>
+                        <!-- HTML for Button widget on sidebar -->
+                        <li>
+                            <a href="#button" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Button</a>
+                            <ul class="collapse list-unstyled" id="button">
+                                <li>
+                                    <a href="#">Width
+                                        <br>
+                                        <input type="text" id="buttonWidth"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Height
+                                        <br>
+                                        <input type="text" id="buttonHeight"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">X Position
+                                        <br>
+                                        <input type="text" id="buttonX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Y Position
+                                        <br>
+                                        <input type="text" id="buttonY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Colour
+                                        <br>
+                                        <input type="text" id="buttonColour"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Text
+                                        <br>
+                                        <input type="text" id="buttonText"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">WidgetID
+                                        <br>
+                                        <input type="text" id="buttonWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value, 'Button')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.widgets[document.getElementById('buttonWidgetID').value].update(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Checkbox widget on sidebar -->
+                        <li>
+                            <a href="#checkbox" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Check Box</a>
+                            <ul class="collapse list-unstyled" id="checkbox">
+                                <li>
+                                    <a href="#">X Position
+                                        <br>
+                                        <input type="text" id="checkboxX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Y Position
+                                        <br>
+                                        <input type="text" id="checkboxY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">WidgetID
+                                        <br>
+                                        <input type="text" id="checkboxWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.addWidget(12, 12, document.getElementById('checkboxX').value, document.getElementById('checkboxY').value, null, 0, null, 'Checkbox')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.widgets[document.getElementById('checkboxWidgetID').value].update(12, 12, document.getElementById('checkboxX').value, document.getElementById('checkboxY').value, null, 0, null)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Radio Button widget on sidebar -->
+                        <li>
+                            <a href="#radiobutton" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Radio Button</a>
+                            <ul class="collapse list-unstyled" id="radiobutton">
+                                <li>
+                                    <a href="#">X Position
+                                        <br>
+                                        <input type="text" id="radiobuttonX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Y Position
+                                        <br>
+                                        <input type="text" id="radiobuttonY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">WidgetID
+                                        <br>
+                                        <input type="text" id="radiobuttonWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.addWidget(12, 12, document.getElementById('radiobuttonX').value, document.getElementById('radiobuttonY').value, null, 0, null, 'Radiobutton')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.widgets[document.getElementById('radiobuttonWidgetID').value].update(12, 12, document.getElementById('radiobuttonX').value, document.getElementById('radiobuttonY').value, null, 0, null)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Text Box widget on sidebar -->
+                        <li>
+                            <a href="#textbox" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Text Box</a>
+                            <ul class="collapse list-unstyled" id="textbox">
+                                <li>
+                                    <a href="#">Width
+                                        <br>
+                                        <input type="text" id="textboxWidth"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Height
+                                        <br>
+                                        <input type="text" id="textboxHeight"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">X Position
+                                        <br>
+                                        <input type="text" id="textboxX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">Y Position
+                                        <br>
+                                        <input type="text" id="textboxY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">WidgetID
+                                        <br>
+                                        <input type="text" id="textboxWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('textboxWidth').value, document.getElementById('textboxHeight').value, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null, 'Textbox')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <button type="button" onclick="inter.widgets[document.getElementById('textboxWidgetID').value].update(document.getElementById('textboxWidth').value, document.getElementById('textboxHeight').value, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -495,16 +691,19 @@
                     <ul class="collapse list-unstyled" id="canvasEdit">
                         <li>
                             <a href="#">Width
+                                <br>
                                 <input type="text" id="canvasWidth"/>
                             </a>
                         </li>
                         <li>
                             <a href="#">Height
+                                <br>
                                 <input type="text" id="canvasHeight"/>
                             </a>
                         </li>
                         <li>
                             <a href="#">Colour
+                                <br>
                                 <input type="text" id="canvasColour"/>
                             </a>
                         </li>
