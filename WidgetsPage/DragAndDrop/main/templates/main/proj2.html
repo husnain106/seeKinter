@@ -63,6 +63,29 @@
                     }   
                 }  
             }
+
+            // Checks if canvas update fits with current widgets
+            updateCanvas(width, height, colour) {
+                // Quick check for negative values
+                if ((width > 0)&(height > 0)) {
+                    let validChange = true
+                    // Loops through all widgets individually
+                    for (let i = 0; i < this.widgets.length; i++) {
+                        if (((parseInt(this.widgets[i].width) + parseInt(this.widgets[i].x)) > width)||((parseInt(this.widgets[i].height) + parseInt(this.widgets[i].y)) > height)) {
+                            validChange = false;
+                        }
+                    }
+                    // Applies the canvas changes if valid values provided
+                    if (validChange) {
+                        this.canvas.update(width, height, colour);
+                    } else {
+                        alert("This canvas size would be too small for the placed widgets.");
+                    }
+                // Catching negative values
+                } else {
+                    alert("Please enter a valid canvas size.");
+                }
+            }
         }
         
         // Canvas class used to make an area for interface editing
@@ -709,7 +732,7 @@
                         </li>
                         <li>
                             <a href="#">
-                                <button type="button" onclick="inter.canvas.update(document.getElementById('canvasWidth').value, document.getElementById('canvasHeight').value, document.getElementById('canvasColour').value)">Update</button>
+                                <button type="button" onclick="inter.updateCanvas(document.getElementById('canvasWidth').value, document.getElementById('canvasHeight').value, document.getElementById('canvasColour').value)">Update</button>
                             </a>
                         </li>
                     </ul>
