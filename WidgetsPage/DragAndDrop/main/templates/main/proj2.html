@@ -780,16 +780,18 @@
                                     var hexDigits = new Array
                                             ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"); 
 
-                                    //Function to convert rgb color to hex format
+                                    //Function to convert rgb color to hex format - returns hex val as string
                                     function rgb2hex(rgb) {
                                      rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
                                      return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
                                     }
 
+                                    // helper function for rgb2hex
                                     function hex(x) {
                                       return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
                                     }
 
+                                    // pushes a download given a filename and string to be stores in the file
                                     function download(filename, text) {
                                       var element = document.createElement("a");
                                       element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
@@ -799,15 +801,24 @@
                                       element.click();
                                       document.body.removeChild(element);
                                     }
+
+                                    // craetes array of all elements within the canvas
                                     var searchEles = document.getElementById("widgets").children;
 
+
+                                    // the next three variables fetch the properties of the canvas
                                     var canvas_width = searchEles[0].style.width;
                                     canvas_width = canvas_width.slice(0, -2);
                                     var canvas_height = searchEles[0].style.height;
                                     canvas_height = canvas_height.slice(0, -2);
-                                    var boiler_plate_beginning = "import tkinter as tk\nwindow = tk.Tk()\nwindow.geometry(\"" + canvas_width + "x" + canvas_height + "\")\npixel = tk.PhotoImage(width=1, height=1)\n";
+                                    var canvas_color = rgb2hex(searchEles[0].style.backgroundColor);
+
+                                    // some default, boilerplate code for python
+                                    var boiler_plate_beginning = "import tkinter as tk\nwindow = tk.Tk()\nwindow.geometry(\"" + canvas_width + "x" + canvas_height + "\")\npixel = tk.PhotoImage(width=1, height=1)\nwindow.configure(bg=\"" + canvas_color + "\")\n";
                                     var boiler_plate_ending = "window.mainloop()";
                                     python_code = ""
+
+                                    // loops through the elements in the canvas, fetches attributes of each element, concatenates with constant python code
                                     for(var i = 1; i < searchEles.length; i++){
                                         var element = searchEles[i]
                                         var element_name = searchEles[i].tagName;
@@ -866,7 +877,7 @@
                                         }
                                     }
                                     python_code = boiler_plate_beginning + python_code + boiler_plate_ending;
-                                    download("your_interface.py", python_code);
+                                    download(document.getElementById("project_name").innerHTML + ".py", python_code);
                                 '>Export Project</a>
                             </li>
                         </ul>
