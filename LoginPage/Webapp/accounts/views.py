@@ -56,9 +56,9 @@ def logout(request):
 
 
 def file(request, param):
-    
-    print("projectId is " + param)
-    return render(request, 'accounts/help.html') # redirect to a dummy template
+    projectId = param
+    print("projectId is " + projectId)
+    return render(request, 'accounts/help.html', locals()) # redirect to a dummy template
 
 
 
