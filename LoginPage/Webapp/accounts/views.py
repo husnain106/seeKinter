@@ -23,6 +23,9 @@ def home(request):
     else:
         return render(request, 'accounts/dashboard.html')
 
+def widgets(request):
+    return render(request, 'accounts/project.html')
+
 def helpPage(request):
     return render(request, 'accounts/help.html')
 

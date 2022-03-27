@@ -1,0 +1,978 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Project</title>
+
+    <script type="text/javascript">
+        // Interface class used to manage the script and I/O
+        class Interface {
+            constructor() {
+                this.widgets = [];
+                this.canvas = new Canvas(700, 700); // Sets default canvas size to 700x700px
+                this.canvas.drawCanvas();
+            }
+            
+            // Adds a widget to the canvas
+            addWidget(width, height, x, y, colour, layer, text, widgetType) {
+                // Checks if valid position and size is provided
+                if ((parseInt(width) + parseInt(x) > parseInt(this.canvas.width))||(parseInt(height) + parseInt(y) > parseInt(this.canvas.height))||(x < 0)||(y < 0)) {
+                    alert("Please provide a position and size within the size of the canvas.")
+                } else {
+                    // Otherwise will create the widget
+                    switch (widgetType) {
+                        // Chooses which type of widget to create
+                        case "Label":
+                            let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempLabel);
+                            tempLabel.placeWidget();
+                            break;
+
+                        case "Button":
+                            let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempButton);
+                            tempButton.placeWidget();
+                            break;
+
+                        case "Checkbox":
+                            let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempCheckBox);
+                            tempCheckBox.placeWidget();
+                            break;
+
+                        case "Radiobutton":
+                            let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempRadioButton);
+                            tempRadioButton.placeWidget();
+                            break;
+
+                        case "Textbox":
+                            let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas);
+                            this.widgets.push(tempTextBox);
+                            tempTextBox.placeWidget();
+                            break;
+
+                        default:
+                            alert("oh dear");
+                            break;
+                    }   
+                }  
+            }
+
+            // Checks if canvas update fits with current widgets
+            updateCanvas(width, height, colour) {
+                // Quick check for negative values
+                if ((width > 0)&(height > 0)) {
+                    let validChange = true
+                    // Loops through all widgets individually
+                    for (let i = 0; i < this.widgets.length; i++) {
+                        if (((parseInt(this.widgets[i].width) + parseInt(this.widgets[i].x)) > width)||((parseInt(this.widgets[i].height) + parseInt(this.widgets[i].y)) > height)) {
+                            validChange = false;
+                        }
+                    }
+                    // Applies the canvas changes if valid values provided
+                    if (validChange) {
+                        this.canvas.update(width, height, colour);
+                    } else {
+                        alert("This canvas size would be too small for the placed widgets.");
+                    }
+                // Catching negative values
+                } else {
+                    alert("Please enter a valid canvas size.");
+                }
+            }
+
+            // Converts all relevant widget data to JSON format
+            exportProjectToJSON() {
+                // Adding canvas to project's JSON
+                let widgetJSON = '{ "canvas" : {' +
+                                    '"width":"' + String(this.canvas.width) + '" , ' +
+                                    '"height":"' + String(this.canvas.height) + '" , ' +
+                                    '"colour":"' + String(this.canvas.colour) + '"} , ';
+                // Adding widgets to project's JSON
+                widgetJSON += '"widgets" : [';
+                for (let i = 0; i < this.widgets.length; i++) {
+                    widgetJSON += '{ '+
+                                    '"widgetType":"' + String(this.widgets[i].widgetType) + '" , ' +
+                                    '"width":"' + String(this.widgets[i].width) + '" , ' +
+                                    '"height":"' + String(this.widgets[i].height) + '" , ' +
+                                    '"x":"' + String(this.widgets[i].x) + '" , ' +
+                                    '"y":"' + String(this.widgets[i].y) + '" , ' +
+                                    '"colour":"' + String(this.widgets[i].colour) + '" , ' +
+                                    '"layer":"' + String(this.widgets[i].layer) + '" , ' +
+                                    '"text":"' + String(this.widgets[i].text) + '" } , ';
+                }
+                widgetJSON = widgetJSON.slice(0, -3);
+                widgetJSON += ' ]}';
+                alert(widgetJSON);
+            }
+
+            // Receives JSON data and converts into widgets
+            importProjectFromJSON(widgetJSON) {
+                let widgetData = JSON.parse(widgetJSON);
+                // Importing canvas from JSON
+                this.updateCanvas(
+                    widgetData.canvas.width,
+                    widgetData.canvas.height,
+                    widgetData.canvas.colour
+                    );
+                // Importing widgets from JSON
+                for (let i = 0; i < widgetData.widgets.length; i++) {
+                    this.addWidget(
+                        widgetData.widgets[i].width,
+                        widgetData.widgets[i].height,
+                        widgetData.widgets[i].x,
+                        widgetData.widgets[i].y,
+                        widgetData.widgets[i].colour,
+                        widgetData.widgets[i].layer,
+                        widgetData.widgets[i].text,
+                        widgetData.widgets[i].widgetType
+                        );
+                }
+            }
+        }
+        
+        // Canvas class used to make an area for interface editing
+        class Canvas {
+            constructor(width, height) {
+                this.width = width;
+                this.height = height;
+                this.colour = '#FFFFFF'; // Sets default background colour to white
+                this.image = document.createElement("div");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+            
+            // Allows the canvas object to edit its respective HTML element
+            drawCanvas() {
+                this.image.style.padding = "20px";
+                this.image.style.width = this.width + 'px';
+                this.image.style.height = this.height + 'px';
+                this.image.style.background = this.colour;
+                this.image.style.borderStyle = 'solid';
+                this.image.style.position = 'absolute';
+                this.image.style.top = '150px';
+                /*
+                NOTE:
+                The canvas can't be centered, otherwise the absolute values
+                we have provided the widget placement algorithm may behave
+                in unexpected ways, and could cause issues when resizing
+                the canvas or the page.
+                */
+            }
+            
+            // Updates the attributes of the canvas object then redraws it
+            update(width, height, colour) {
+                this.width = width;
+                this.height = height;
+                this.colour = colour;
+                this.drawCanvas();
+            }
+
+            // Returns the rectangle associated with the canvas element
+            getPosition() {
+                return this.image.getBoundingClientRect();
+            }
+        }
+
+        // Widget class used to create interface elements (other types of widget will inherit)
+        class Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                this.width = width;
+                this.height = height;
+                this.x = x;
+                this.y = y;
+                this.colour = colour;
+                this.layer = layer;
+                this.text = text;
+                this.canvas = canvas;
+            }
+
+            // Allows the widget object to edit its respective HTML element
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.width = this.width + 'px';
+                this.image.style.height = this.height + 'px';
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+                /*
+                NOTE:
+                154 is a static value we are using rather than the canvas' rectangle's position.
+                This is due to how the getBoundingClientRect() method works when the page scrolls.
+                154 is the actual position of the canvas relative to the page, rather than the viewport.
+                */
+                this.image.style.background = this.colour;
+                this.image.innerHTML = this.text;
+            }
+
+            // Updates the attributes of the widget object then redraws it
+            update(width, height, x, y, colour, layer, text) {
+                // Checks if valid position and size is provided
+                if ((parseInt(width) + parseInt(x) > parseInt(this.canvas.width))||(parseInt(height) + parseInt(y) > parseInt(this.canvas.height))||(x < 0)||(y < 0)) {
+                    alert("Please provide a position and size within the size of the canvas.")
+                } else {
+                    // Otherwise will update the widget
+                    this.width = width;
+                    this.height = height;
+                    this.x = x;
+                    this.y = y;
+                    this.colour = colour;
+                    this.layer = layer;
+                    this.text = text;
+                    this.placeWidget();
+                }
+            }
+        }
+
+        // Label widget class
+        class Label extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Label";
+                this.image = document.createElement("div");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+        }
+
+        // Button widget class
+        class Button extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Button";
+                this.image = document.createElement("button");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+        }
+
+        // Check box widget class
+        class CheckBox extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Checkbox";
+                this.image = document.createElement("input");
+                this.image.setAttribute("type", "checkbox");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            /*
+            This method uses polymorphism to allow for reuse of code
+            whilst still adapting to the needs of the checkbox class.
+            */
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+            }
+        }
+
+        // Radio button widget class
+        class RadioButton extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Radiobutton";
+                this.image = document.createElement("input");
+                this.image.setAttribute("type", "radio");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            /*
+            This method uses polymorphism to allow for reuse of code
+            whilst still adapting to the needs of the radiobutton class.
+            */
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+            }
+        }
+
+        // Text box widget class
+        class TextBox extends Widget {
+            constructor(width, height, x, y, colour, layer, text, canvas) {
+                super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Textbox";
+                this.image = document.createElement("textarea");
+                this.image.setAttribute("type", "text");
+                document.getElementById("widgets").appendChild(this.image);
+            }
+
+            /*
+            This method uses polymorphism to allow for reuse of code
+            whilst still adapting to the needs of the text box class.
+            */
+            placeWidget() {
+                let pos = this.canvas.getPosition();
+                this.image.style.resize = "none";
+                this.image.style.position = "absolute";
+                this.image.style.width = this.width + 'px';
+                this.image.style.height = '25px';
+                this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
+                this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+            }
+        }
+    </script>
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+    <style type="text/css">
+        /*
+            DEMO STYLE
+        */
+
+        @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #fafafa;
+        }
+
+        p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1em;
+            font-weight: 300;
+            line-height: 1.7em;
+            color: #999;
+        }
+
+        a,
+        a:hover,
+        a:focus {
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .navbar {
+            padding: 15px 10px;
+            background: #fff;
+            border: none;
+            border-radius: 0;
+            margin-bottom: 40px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-btn {
+            box-shadow: none;
+            outline: none !important;
+            border: none;
+        }
+
+        .line {
+            width: 100%;
+            height: 1px;
+            border-bottom: 1px dashed #ddd;
+            margin: 40px 0;
+        }
+
+        /* ---------------------------------------------------
+            SIDEBAR STYLE
+        ----------------------------------------------------- */
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background: #8a9ade;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        #sidebar.active {
+            margin-left: -250px;
+        }
+
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: #adb5d9;
+        }
+
+        #sidebar ul.components {
+            padding: 20px 0;
+            border-bottom: 1px solid #8a9ade;
+        }
+
+        #sidebar ul p {
+            color: #fff;
+            padding: 10px;
+        }
+
+        #sidebar ul li a {
+            padding: 10px;
+            font-size: 1.1em;
+            display: block;
+        }
+
+        #sidebar ul li a:hover {
+            color: #8a9ade;
+            background: #fff;
+        }
+
+        #sidebar ul li.active>a,
+        a[aria-expanded="true"] {
+            color: #fff;
+            background: #8a9ade;
+        }
+
+        a[data-toggle="collapse"] {
+            position: relative;
+        }
+
+        .dropdown-toggle::after {
+            display: block;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        ul ul a {
+            font-size: 0.9em !important;
+            padding-left: 30px !important;
+            background: #6d7fcc;
+        }
+
+        ul.CTAs {
+            padding: 20px;
+        }
+
+        ul.CTAs a {
+            text-align: center;
+            font-size: 0.9em !important;
+            display: block;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+
+        a.download {
+            background: #fff;
+            color: #7386D5;
+        }
+
+        a.article,
+        a.article:hover {
+            background: #6d7fcc !important;
+            color: #fff !important;
+        }
+
+        input[type=text] {
+            width: 150px;
+        }
+
+        /* ---------------------------------------------------
+            CONTENT STYLE
+        ----------------------------------------------------- */
+
+        #content {
+            width: 100%;
+            padding: 20px;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        /* ---------------------------------------------------
+            MEDIAQUERIES
+        ----------------------------------------------------- */
+
+        @media (max-width: 768px) {
+            #sidebar {
+                margin-left: -250px;
+            }
+            #sidebar.active {
+                margin-left: 0;
+            }
+            #sidebarCollapse span {
+                display: none;
+            }
+        }
+
+        /*.canvas{
+          border: 2px solid;
+          padding: 20px; 
+          width: 300px;
+          resize: both;
+          overflow: auto;   
+          margin: 0 auto;
+        }*/
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <img src="{% static 'accounts/seeKinter_logo_wobg.png' %}" alt="" width="200" height="33.02752294">
+            </div>
+
+            <ul class="list-unstyled components">
+                <!-- <p contenteditable="true" id="project_name">Project Name</p> -->
+                <button id="startButton" type="button" class="btn btn-info" onclick="inter = new Interface(); document.getElementById('startButton').remove();">Start Project</button>
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Add Widgets</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <!-- HTML for Label widget on sidebar -->
+                        <li>
+                            <a href="#label" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Label</a>
+                            <ul class="collapse list-unstyled" id="label">
+                                <li>
+                                    <a>Width
+                                        <br>
+                                        <input type="text" id="labelWidth"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Height
+                                        <br>
+                                        <input type="text" id="labelHeight"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>X Position
+                                        <br>
+                                        <input type="text" id="labelX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Y Position
+                                        <br>
+                                        <input type="text" id="labelY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Colour
+                                        <br>
+                                        <input type="text" id="labelColour"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Text
+                                        <br>
+                                        <input type="text" id="labelText"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>WidgetID
+                                        <br>
+                                        <input type="text" id="labelWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('labelWidth').value, document.getElementById('labelHeight').value, document.getElementById('labelX').value, document.getElementById('labelY').value, document.getElementById('labelColour').value, 0, document.getElementById('labelText').value, 'Label')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.widgets[document.getElementById('labelWidgetID').value].update(document.getElementById('labelWidth').value, document.getElementById('labelHeight').value, document.getElementById('labelX').value, document.getElementById('labelY').value, document.getElementById('labelColour').value, 0, document.getElementById('labelText').value)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Button widget on sidebar -->
+                        <li>
+                            <a href="#button" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Button</a>
+                            <ul class="collapse list-unstyled" id="button">
+                                <li>
+                                    <a>Width
+                                        <br>
+                                        <input type="text" id="buttonWidth"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Height
+                                        <br>
+                                        <input type="text" id="buttonHeight"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>X Position
+                                        <br>
+                                        <input type="text" id="buttonX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Y Position
+                                        <br>
+                                        <input type="text" id="buttonY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Colour
+                                        <br>
+                                        <input type="text" id="buttonColour"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Text
+                                        <br>
+                                        <input type="text" id="buttonText"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>WidgetID
+                                        <br>
+                                        <input type="text" id="buttonWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value, 'Button')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.widgets[document.getElementById('buttonWidgetID').value].update(document.getElementById('buttonWidth').value, document.getElementById('buttonHeight').value, document.getElementById('buttonX').value, document.getElementById('buttonY').value, document.getElementById('buttonColour').value, 0, document.getElementById('buttonText').value)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Checkbox widget on sidebar -->
+                        <li>
+                            <a href="#checkbox" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Check Box</a>
+                            <ul class="collapse list-unstyled" id="checkbox">
+                                <li>
+                                    <a>X Position
+                                        <br>
+                                        <input type="text" id="checkboxX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Y Position
+                                        <br>
+                                        <input type="text" id="checkboxY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>WidgetID
+                                        <br>
+                                        <input type="text" id="checkboxWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.addWidget(12, 12, document.getElementById('checkboxX').value, document.getElementById('checkboxY').value, null, 0, null, 'Checkbox')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.widgets[document.getElementById('checkboxWidgetID').value].update(12, 12, document.getElementById('checkboxX').value, document.getElementById('checkboxY').value, null, 0, null)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Radio Button widget on sidebar -->
+                        <li>
+                            <a href="#radiobutton" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Radio Button</a>
+                            <ul class="collapse list-unstyled" id="radiobutton">
+                                <li>
+                                    <a>X Position
+                                        <br>
+                                        <input type="text" id="radiobuttonX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Y Position
+                                        <br>
+                                        <input type="text" id="radiobuttonY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>WidgetID
+                                        <br>
+                                        <input type="text" id="radiobuttonWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.addWidget(12, 12, document.getElementById('radiobuttonX').value, document.getElementById('radiobuttonY').value, null, 0, null, 'Radiobutton')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.widgets[document.getElementById('radiobuttonWidgetID').value].update(12, 12, document.getElementById('radiobuttonX').value, document.getElementById('radiobuttonY').value, null, 0, null)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- HTML for Text Box widget on sidebar -->
+                        <li>
+                            <a href="#textbox" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Text Box</a>
+                            <ul class="collapse list-unstyled" id="textbox">
+                                <li>
+                                    <a>Width
+                                        <br>
+                                        <input type="text" id="textboxWidth"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Height
+                                        <br>
+                                        <input type="text" id="textboxHeight"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>X Position
+                                        <br>
+                                        <input type="text" id="textboxX"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>Y Position
+                                        <br>
+                                        <input type="text" id="textboxY"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>WidgetID
+                                        <br>
+                                        <input type="text" id="textboxWidgetID"/>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('textboxWidth').value, document.getElementById('textboxHeight').value, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null, 'Textbox')">Place</button>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a>
+                                        <button type="button" onclick="inter.widgets[document.getElementById('textboxWidgetID').value].update(document.getElementById('textboxWidth').value, document.getElementById('textboxHeight').value, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null)">Update</button>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#canvasEdit" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Edit Canvas</a>
+                    <ul class="collapse list-unstyled" id="canvasEdit">
+                        <li>
+                            <a>Width
+                                <br>
+                                <input type="text" id="canvasWidth"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a>Height
+                                <br>
+                                <input type="text" id="canvasHeight"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a>Colour
+                                <br>
+                                <input type="text" id="canvasColour"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <button type="button" onclick="inter.updateCanvas(document.getElementById('canvasWidth').value, document.getElementById('canvasHeight').value, document.getElementById('canvasColour').value)">Update</button>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#JSONinput" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">JSON input</a>
+                    <ul class="collapse list-unstyled" id="JSONinput">
+                        <li>
+                            <a>
+                                <input type="text" id="inputJSON"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                            <button type="button" onclick="inter.importProjectFromJSON(document.getElementById('inputJSON').value)">Go!</button>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- <li>
+                    <a>About</a>
+                </li>
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">My Projects</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a>Project 1</a>
+                        </li>
+                        <li>
+                            <a>Project 2</a>
+                        </li>
+                        <li>
+                            <a>Project 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Help</a>
+                </li> -->
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button class="btn btn-info" style="background-color: lightslategray; height: 45px">
+                        <p contenteditable="true" id="project_name" style="color: #FFFFFF; align-content: center; vertical-align: middle; text-align: center;">Project Name</p>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active" style="cursor: pointer;">
+                                <a class="nav-link" onclick="inter.exportProjectToJSON()">Save Project</a>
+                            </li>
+                            <li class="nav-item active" style="cursor: pointer;">
+                                <a class="nav-link" onclick='
+                                    var hexDigits = new Array
+                                            ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"); 
+
+                                    //Function to convert rgb color to hex format - returns hex val as string
+                                    function rgb2hex(rgb) {
+                                     rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+                                     return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+                                    }
+
+                                    // helper function for rgb2hex
+                                    function hex(x) {
+                                      return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+                                    }
+
+                                    // pushes a download given a filename and string to be stores in the file
+                                    function download(filename, text) {
+                                      var element = document.createElement("a");
+                                      element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+                                      element.setAttribute("download", filename);
+                                      element.style.display = "none";
+                                      document.body.appendChild(element);
+                                      element.click();
+                                      document.body.removeChild(element);
+                                    }
+
+                                    // craetes array of all elements within the canvas
+                                    var searchEles = document.getElementById("widgets").children;
+
+
+                                    // the next three variables fetch the properties of the canvas
+                                    var canvas_width = searchEles[0].style.width;
+                                    canvas_width = canvas_width.slice(0, -2);
+                                    var canvas_height = searchEles[0].style.height;
+                                    canvas_height = canvas_height.slice(0, -2);
+                                    var canvas_color = rgb2hex(searchEles[0].style.backgroundColor);
+
+                                    // some default, boilerplate code for python
+                                    var boiler_plate_beginning = "import tkinter as tk\nwindow = tk.Tk()\nwindow.geometry(\"" + canvas_width + "x" + canvas_height + "\")\npixel = tk.PhotoImage(width=1, height=1)\nwindow.configure(bg=\"" + canvas_color + "\")\n";
+                                    var boiler_plate_ending = "window.mainloop()";
+                                    python_code = ""
+
+                                    // loops through the elements in the canvas, fetches attributes of each element, concatenates with constant python code
+                                    for(var i = 1; i < searchEles.length; i++){
+                                        var element = searchEles[i]
+                                        var element_name = searchEles[i].tagName;
+                                        var element_type = searchEles[i].getAttribute("type");
+
+                                        if(element_name == "DIV"){
+                                            var txt = element.innerHTML;
+                                            var wid = element.style.width;
+                                            wid = wid.slice(0, -2);
+                                            var hei = element.style.height;
+                                            hei = hei.slice(0, -2);
+                                            var coord_y = element.getBoundingClientRect().top - 150;
+                                            var coord_x = element.getBoundingClientRect().left - 270;
+                                            var bg_rgb = element.style.backgroundColor;
+                                            var col = rgb2hex(bg_rgb);
+                                            python_code += "widget" + i + " = tk.Label(window, anchor = \"nw\", compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                        }
+                                        else if(element_name == "BUTTON"){
+                                            var txt = element.innerHTML;
+                                            var wid = element.style.width;
+                                            wid = wid.slice(0, -2);
+                                            var hei = element.style.height;
+                                            hei = hei.slice(0, -2);
+                                            var coord_y = element.getBoundingClientRect().top - 150;
+                                            var coord_x = element.getBoundingClientRect().left - 270
+                                            var bg_rgb = element.style.backgroundColor;
+                                            var col = rgb2hex(bg_rgb);
+                                            python_code += "widget" + i + " = tk.Button(window, compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                        }
+                                        else if(element_name == "TEXTAREA"){
+                                            var wid = element.style.width;
+                                            wid = wid.slice(0, -2);
+                                            var hei = element.style.height;
+                                            hei = hei.slice(0, -2);
+                                            var coord_y = element.getBoundingClientRect().top - 150;
+                                            var coord_x = element.getBoundingClientRect().left - 270
+                                            python_code += "widget" + i + " = tk.Entry(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ", width = " + wid +")\n";
+                                        }
+                                        else if(element_type == "checkbox"){
+                                            var wid = element.style.width;
+                                            wid = wid.slice(0, -2);
+                                            var hei = element.style.height;
+                                            hei = hei.slice(0, -2);
+                                            var coord_y = element.getBoundingClientRect().top - 150;
+                                            var coord_x = element.getBoundingClientRect().left - 270
+                                            python_code += "widget" + i + " = tk.Checkbutton(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                        }
+                                        else if(element_type == "radio"){
+                                            var wid = element.style.width;
+                                            wid = wid.slice(0, -2);
+                                            var hei = element.style.height;
+                                            hei = hei.slice(0, -2);
+                                            var coord_y = element.getBoundingClientRect().top - 150;
+                                            var coord_x = element.getBoundingClientRect().left - 270
+                                            python_code += "widget" + i + " = tk.Radiobutton(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                        }
+                                    }
+                                    python_code = boiler_plate_beginning + python_code + boiler_plate_ending;
+                                    download(document.getElementById("project_name").innerHTML + ".py", python_code);
+                                '>Export Project</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+                <div class="canvas" id="widgets">
+            
+                </div>
+            </div>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+
+</html>

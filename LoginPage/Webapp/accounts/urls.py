@@ -10,7 +10,8 @@ urlpatterns = [
     path('login/', views.login, name = "login/"),
     path('signup/', views.signup, name = "signup/"),
     path('logout/', views.logout, name="logout"),
-    re_path('^myprojects/file/(\w)',views.file)
+    re_path('^myprojects/file/(\w)',views.file),
+    path('project/', views.widgets)
 ] 
 
 
