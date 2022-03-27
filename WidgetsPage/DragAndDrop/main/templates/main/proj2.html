@@ -900,10 +900,10 @@
                                             var hei = element.style.height;
                                             hei = hei.slice(0, -2);
                                             var coord_y = element.getBoundingClientRect().top - 150;
-                                            var coord_x = element.getBoundingClientRect().left - 270
+                                            var coord_x = element.getBoundingClientRect().left - 270;
                                             var bg_rgb = element.style.backgroundColor;
                                             var col = rgb2hex(bg_rgb);
-                                            python_code += "widget" + i + " = tk.Label(window, compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                            python_code += "widget" + i + " = tk.Label(window, anchor = \"nw\", compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
                                         }
                                         else if(element_name == "BUTTON"){
                                             var txt = element.innerHTML;
