@@ -86,6 +86,55 @@
                     alert("Please enter a valid canvas size.");
                 }
             }
+
+            // Converts all relevant widget data to JSON format
+            exportProjectToJSON() {
+                // Adding canvas to project's JSON
+                let widgetJSON = '{ "canvas" : {' +
+                                    '"width":"' + String(this.canvas.width) + '" , ' +
+                                    '"height":"' + String(this.canvas.height) + '" , ' +
+                                    '"colour":"' + String(this.canvas.colour) + '"} , ';
+                // Adding widgets to project's JSON
+                widgetJSON += '"widgets" : [';
+                for (let i = 0; i < this.widgets.length; i++) {
+                    widgetJSON += '{ '+
+                                    '"widgetType":"' + String(this.widgets[i].widgetType) + '" , ' +
+                                    '"width":"' + String(this.widgets[i].width) + '" , ' +
+                                    '"height":"' + String(this.widgets[i].height) + '" , ' +
+                                    '"x":"' + String(this.widgets[i].x) + '" , ' +
+                                    '"y":"' + String(this.widgets[i].y) + '" , ' +
+                                    '"colour":"' + String(this.widgets[i].colour) + '" , ' +
+                                    '"layer":"' + String(this.widgets[i].layer) + '" , ' +
+                                    '"text":"' + String(this.widgets[i].text) + '" } , ';
+                }
+                widgetJSON = widgetJSON.slice(0, -3);
+                widgetJSON += ' ]}';
+                alert(widgetJSON);
+            }
+
+            // Receives JSON data and converts into widgets
+            importProjectFromJSON(widgetJSON) {
+                let widgetData = JSON.parse(widgetJSON);
+                // Importing canvas from JSON
+                this.updateCanvas(
+                    widgetData.canvas.width,
+                    widgetData.canvas.height,
+                    widgetData.canvas.colour
+                    );
+                // Importing widgets from JSON
+                for (let i = 0; i < widgetData.widgets.length; i++) {
+                    this.addWidget(
+                        widgetData.widgets[i].width,
+                        widgetData.widgets[i].height,
+                        widgetData.widgets[i].x,
+                        widgetData.widgets[i].y,
+                        widgetData.widgets[i].colour,
+                        widgetData.widgets[i].layer,
+                        widgetData.widgets[i].text,
+                        widgetData.widgets[i].widgetType
+                        );
+                }
+            }
         }
         
         // Canvas class used to make an area for interface editing
@@ -185,6 +234,7 @@
         class Label extends Widget {
             constructor(width, height, x, y, colour, layer, text, canvas) {
                 super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Label";
                 this.image = document.createElement("div");
                 document.getElementById("widgets").appendChild(this.image);
             }
@@ -194,6 +244,7 @@
         class Button extends Widget {
             constructor(width, height, x, y, colour, layer, text, canvas) {
                 super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Button";
                 this.image = document.createElement("button");
                 document.getElementById("widgets").appendChild(this.image);
             }
@@ -203,6 +254,7 @@
         class CheckBox extends Widget {
             constructor(width, height, x, y, colour, layer, text, canvas) {
                 super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Checkbox";
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "checkbox");
                 document.getElementById("widgets").appendChild(this.image);
@@ -225,6 +277,7 @@
         class RadioButton extends Widget {
             constructor(width, height, x, y, colour, layer, text, canvas) {
                 super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Radiobutton";
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "radio");
                 document.getElementById("widgets").appendChild(this.image);
@@ -247,6 +300,7 @@
         class TextBox extends Widget {
             constructor(width, height, x, y, colour, layer, text, canvas) {
                 super(width, height, x, y, colour, layer, text, canvas);
+                this.widgetType = "Textbox";
                 this.image = document.createElement("textarea");
                 this.image.setAttribute("type", "text");
                 document.getElementById("widgets").appendChild(this.image);
@@ -261,7 +315,7 @@
                 this.image.style.resize = "none";
                 this.image.style.position = "absolute";
                 this.image.style.width = this.width + 'px';
-                this.image.style.height = this.height + 'px';
+                this.image.style.height = '25px';
                 this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
                 this.image.style.top = String(150 + parseInt(this.y)) + 'px';
             }
@@ -737,6 +791,21 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="#JSONinput" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">JSON input</a>
+                    <ul class="collapse list-unstyled" id="JSONinput">
+                        <li>
+                            <a>
+                                <input type="text" id="inputJSON"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                            <button type="button" onclick="inter.importProjectFromJSON(document.getElementById('inputJSON').value)">Go!</button>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <!-- <li>
                     <a>About</a>
                 </li>
@@ -773,7 +842,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item active" style="cursor: pointer;">
-                                <a class="nav-link">Save Project</a>
+                                <a class="nav-link" onclick="inter.exportProjectToJSON()">Save Project</a>
                             </li>
                             <li class="nav-item active" style="cursor: pointer;">
                                 <a class="nav-link" onclick='
