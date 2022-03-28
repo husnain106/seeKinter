@@ -844,7 +844,9 @@
                             <li class="nav-item active" style="cursor: pointer;">
                                 <!-- shows save project only if user is logged in -->
                                 {% if logged_in == True %}
-                                <a class="nav-link" onclick="inter.exportProjectToJSON()">Save Project</a>
+                                <form action="" method="post">{% csrf_token %}<input type="submit" class="nav-link" name="json" value = "hi" id="temp_id" onclick="
+                                    document.getElementById('temp_id').value = inter.exportProjectToJSON();
+                                ">Save Project</form>
                                 {% endif %}
                             </li>
                             <!-- Alerts json -->

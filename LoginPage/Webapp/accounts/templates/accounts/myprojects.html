@@ -295,9 +295,9 @@
             <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_self'>Open</a></li>
             <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_blank'>Open in new tab</a></li>
             <li><hr class='dropdown-divider'></li>
-            <li class='dropdown-item project-item' type ='button' id='rename{{item.id}}' value={{item.id}} onclick='rename_projects(value)'>Rename</li>
-            <li class='dropdown-item project-item' type ='button' id='copy{{item.id}}' value={{item.id}} onclick='copy_projects(value)'>Duplicate</li>
-            <li class='dropdown-item project-item' type ='button' id='delete{{item.id}}' value={{item.id}} onclick='delete_projects(value)'>Delete</li>
+            <!-- <li class='dropdown-item project-item' type ='button' id='rename{{item.id}}' value={{item.id}} onclick='rename_projects(value)'>Rename</li> -->
+            <a href="duplicate-project/{{item.id}}"><li class='dropdown-item project-item' type ='button' id='copy{{item.id}}' value={{item.id}} onclick='copy_projects(value)'>Duplicate</li></a>
+            <a href="delete-project/{{item.id}}"><li class='dropdown-item project-item' type ='button' id='delete{{item.id}}' value={{item.id}} onclick='delete_projects(value)'>Delete</li></a>
           </ul>
         </div>
       </div>

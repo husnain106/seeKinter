@@ -24,7 +24,7 @@ def home(request):
         return render(request, 'accounts/dashboard.html')
 
 def widgets(request):
-
+    print(request.POST.get("json"));
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
 def helpPage(request):
@@ -48,7 +48,13 @@ def myProjects(request):
         return render(request, 'accounts/login.html')
 
 
-    
+def delete_project(request, param):
+    print(param)
+    return redirect("/myprojects")
+
+def duplicate_project(request, param):
+    print(param)
+    return redirect("/myprojects")
 
 @cache_control(no_cache=True, must_revalidate=True)
 @never_cache
