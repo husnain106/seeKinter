@@ -844,9 +844,16 @@
                             <li class="nav-item active" style="cursor: pointer;">
                                 <!-- shows save project only if user is logged in -->
                                 {% if logged_in == True %}
-                                <form action="" method="post">{% csrf_token %}<input type="submit" class="nav-link" name="json" value = "hi" id="temp_id" onclick="
-                                    document.getElementById('temp_id').value = inter.exportProjectToJSON();
-                                ">Save Project</form>
+                                
+                                <a class="nav-link" id="temp_id" onclick="
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open('POST', '#', true);
+                                    xhr.setRequestHeader('Content-Type', 'application/json');
+                                    // xhr.send(JSON.stringify({
+                                    //     'value': 'hi'
+                                    // }));
+                                    xhr.send('hi!');
+                                ">{% csrf_token %}Save Project</a>
                                 {% endif %}
                             </li>
                             <!-- Alerts json -->

@@ -9,12 +9,12 @@ import mysql.connector
 from django.views.decorators.cache import cache_control
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_exempt
 
 
 logged_in = False
 
-
-
+@csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
     global logged_in
@@ -22,17 +22,17 @@ def home(request):
             return redirect('/myprojects')
     else:
         return render(request, 'accounts/dashboard.html')
-
+@csrf_exempt
 def widgets(request):
-    print(request.POST.get("json"));
+    print(request.POST);
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
-
+@csrf_exempt
 def helpPage(request):
     return render(request, 'accounts/help.html')
-
+@csrf_exempt
 def aboutPage(request):
     return render(request, 'accounts/about.html')
-
+@csrf_exempt
 @never_cache
 def myProjects(request):
     # testing data, context should be a dictionary
@@ -47,15 +47,15 @@ def myProjects(request):
     else:
         return render(request, 'accounts/login.html')
 
-
+@csrf_exempt
 def delete_project(request, param):
     print(param)
     return redirect("/myprojects")
-
+@csrf_exempt
 def duplicate_project(request, param):
     print(param)
     return redirect("/myprojects")
-
+@csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True)
 @never_cache
 def logout(request):
@@ -64,15 +64,14 @@ def logout(request):
         logged_in = False
         return render(request, 'accounts/dashboard.html')
 
-
+@csrf_exempt
 def file(request, param):
     projectId = param
     print("projectId is " + projectId)
     return render(request, 'accounts/help.html', locals()) # redirect to a dummy template
 
-
-
 # @unauthenticated_user
+@csrf_exempt
 @never_cache
 def login(request):
     global uname
@@ -107,7 +106,7 @@ def login(request):
             return response
         return render(request, 'accounts/dashboard.html')
 
-
+@csrf_exempt
 def signup(request):
     mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
