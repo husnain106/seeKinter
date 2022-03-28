@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,8 +24,12 @@
       integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
       crossorigin="anonymous"
     />
-
+ 
     <style>
+      .navbar {
+        margin-bottom: 30px;
+      }
+
       .navbar-brand {
         font-size: 25px;
         font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
@@ -48,8 +53,8 @@
       }
 
       .card {
-        margin-top: 50px;
-        height: 432px;
+        /* margin-top: 40px; */
+        height: auto;
         box-shadow: 0 15px 10px -15px #8a9ade;
       }
 
@@ -62,6 +67,53 @@
       #no-acc {
         color: black;
       }
+
+      .valid {
+        color: #a5a5a8;
+        font-size: 14px;
+        margin-left: 5px;
+      }
+
+      #error {
+        color: rgb(230, 73, 73);
+        font-weight: 500;
+      }
+
+      .regis-success {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 30px;
+        }
+
+      .success-info {
+        width: 300px;
+        height: 40px;
+        color: #4F8A10;
+        background-color: #DFF2BF;
+        text-align: center;
+        line-height: 40px;
+      }
+
+      .login-failure {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 30px;
+        
+      }
+      
+      .failure-info {
+        width: 300px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        color: #D8000C;
+        background-color: #FFD2D2;
+      }
+
     </style>
   </head>
 
@@ -91,6 +143,7 @@
               name="login_username"
               placeholder="Username"
               class="form-control"
+              required
             />
           </div>
           <!-- password -->
@@ -103,6 +156,7 @@
               name="login_password"
               placeholder="Password"
               class="form-control"
+              required
             />
           </div>
           <div
@@ -120,6 +174,25 @@
       </div>
     </nav>
 
+    {% if reg_incorrect.name == False and reg_incorrect.username == False and reg_incorrect.password1 == False and reg_incorrect.password2 == False %}
+    <div class="regis-success">
+      <div class="success-info">
+        <i class="fa fa-check"></i>
+        Sign up successfully.
+      </div>
+    </div>
+    {% endif %}
+
+    {% if login_incorrect == True %}
+    <div class="login-failure">
+      <div class="failure-info">
+        <i class="fa fa-times-circle"></i>
+        Username or password is incorrect.
+      </div>
+    </div>
+    {% endif %}
+
+
     <!-- register card -->
     <div class="card mx-auto" style="width: 30rem">
       <div class="card-body">
@@ -133,8 +206,8 @@
         <div class="d-flex justify-content-center form_container">
           <form method="POST" action="/signup/">
             {% csrf_token %}
-            <!-- username -->
-            <div class="input-group mb-3">
+            <!-- fullname -->
+            <div class="input-group">
               <div class="input-group-append">
                 <span class="input-group-text"
                   ><i class="fas fa-user"></i
@@ -145,11 +218,15 @@
                 name="regis_name"
                 placeholder="Full Name"
                 class="form-control"
+                required
               />
             </div>
+            <span class="valid input-group-append mb-3" {% if reg_incorrect.name %}id="error"{% endif %}>
+              At least 2 characters
+            </span>
 
             <!-- username -->
-            <div class="input-group mb-3">
+            <div class="input-group">
               <div class="input-group-append">
                 <span class="input-group-text"
                   ><i class="fas fa-envelope-square"></i
@@ -160,11 +237,21 @@
                 name="regis_username"
                 placeholder="Username"
                 class="form-control"
+                required
               />
             </div>
+            <span class="valid input-group-append mb-3" {% if reg_incorrect.username %}id="error"{% endif %}
+              >At least 8 characters, only letters, numbers and
+              underscore</span
+            >
+            {% if reg_incorrect.unique == False %}
+            <span class="valid input-group-append mb-3">
+              Username already exists
+            </span>
+            {% endif %}
 
             <!-- password -->
-            <div class="input-group mb-3">
+            <div class="input-group">
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-key"></i></span>
               </div>
@@ -173,11 +260,16 @@
                 name="regis_password1"
                 placeholder="Enter password"
                 class="form-control"
+                required
               />
             </div>
+            <span class="valid input-group-append mb-3"  {% if reg_incorrect.password1 %}id="error"{% endif %}
+              >At least 8 characters, only letters, numbers, and
+              symbols</span
+            >
 
             <!-- password confirmation -->
-            <div class="input-group mb-3">
+            <div class="input-group">
               <div class="input-group-append">
                 <span class="input-group-text"><i class="fas fa-key"></i></span>
               </div>
@@ -186,9 +278,13 @@
                 name="regis_password2"
                 placeholder="Re-enter password"
                 class="form-control"
+                required
               />
             </div>
-
+            {% if reg_incorrect.password2 %}
+            <span class="valid input-group-append mb-3" id="error">Passwords do not match</span>
+            {% endif %}
+            
             <div class="d-flex justify-content-center mt-4 login_container">
               <input
                 class="btn login_btn btn-dark form-control"
@@ -200,7 +296,8 @@
         </div>
 
         <div class="no-account">
-          <a id="no-acc" href="project">Want to start a project without an account?</a
+          <a id="no-acc" href="project"
+            >Want to start a project without an account?</a
           >
         </div>
       </div>
