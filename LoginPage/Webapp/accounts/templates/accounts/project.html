@@ -320,12 +320,18 @@
                 this.image.style.top = String(150 + parseInt(this.y)) + 'px';
             }
         }
-    </script>
 
+        function save(){
+            var str = inter.exportProjectToJSON();
+            alert(str);
+            document.body.innerHTML += '<form id="dynForm" onsubmit = "return false;" action="" method="post"><input id="tmp" type="hidden" name="json"></form>';
+            document.getElementById("tmp").value = str;
+            alert(document.getElementById("tmp").value);
+            document.getElementById("dynForm").submit();
+        }
+    </script>
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-    <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="style.css">
 
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
@@ -806,26 +812,6 @@
                         </li>
                     </ul>
                 </li>
-                <!-- <li>
-                    <a>About</a>
-                </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">My Projects</a>
-                    <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a>Project 1</a>
-                        </li>
-                        <li>
-                            <a>Project 2</a>
-                        </li>
-                        <li>
-                            <a>Project 3</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Help</a>
-                </li> -->
             </ul>
         </nav>
 
@@ -845,15 +831,7 @@
                                 <!-- shows save project only if user is logged in -->
                                 {% if logged_in == True %}
                                 
-                                <a class="nav-link" id="temp_id" onclick="
-                                    var xhr = new XMLHttpRequest();
-                                    xhr.open('POST', '#', true);
-                                    xhr.setRequestHeader('Content-Type', 'application/json');
-                                    // xhr.send(JSON.stringify({
-                                    //     'value': 'hi'
-                                    // }));
-                                    xhr.send('hi!');
-                                ">{% csrf_token %}Save Project</a>
+                                <a type="button" class="nav-link" id="save" onclick="save()">Save Project</a>
                                 {% endif %}
                             </li>
                             <!-- Alerts json -->

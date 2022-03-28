@@ -24,7 +24,9 @@ def home(request):
         return render(request, 'accounts/dashboard.html')
 @csrf_exempt
 def widgets(request):
-    print(request.POST);
+    json_string = request.POST.get('json');
+    if(json_string != None):
+        print(json_string)
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
 @csrf_exempt
 def helpPage(request):
