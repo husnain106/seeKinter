@@ -24,7 +24,8 @@ def home(request):
         return render(request, 'accounts/dashboard.html')
 
 def widgets(request):
-    return render(request, 'accounts/project.html')
+
+    return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
 def helpPage(request):
     return render(request, 'accounts/help.html')

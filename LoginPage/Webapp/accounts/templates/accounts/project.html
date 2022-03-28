@@ -109,7 +109,7 @@
                 }
                 widgetJSON = widgetJSON.slice(0, -3);
                 widgetJSON += ' ]}';
-                alert(widgetJSON);
+                return widgetJSON;
             }
 
             // Receives JSON data and converts into widgets
@@ -842,7 +842,14 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="nav navbar-nav ml-auto">
                             <li class="nav-item active" style="cursor: pointer;">
+                                <!-- shows save project only if user is logged in -->
+                                {% if logged_in == True %}
                                 <a class="nav-link" onclick="inter.exportProjectToJSON()">Save Project</a>
+                                {% endif %}
+                            </li>
+                            <!-- Alerts json -->
+                            <li class="nav-item active" style="cursor: pointer;">
+                                <a class="nav-link" onclick="alert(inter.exportProjectToJSON())">Export to JSON</a>
                             </li>
                             <li class="nav-item active" style="cursor: pointer;">
                                 <a class="nav-link" onclick='
@@ -947,7 +954,7 @@
                                     }
                                     python_code = boiler_plate_beginning + python_code + boiler_plate_ending;
                                     download(document.getElementById("project_name").innerHTML + ".py", python_code);
-                                '>Export Project</a>
+                                '>Export to Python</a>
                             </li>
                         </ul>
                     </div>
