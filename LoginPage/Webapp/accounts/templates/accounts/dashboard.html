@@ -114,6 +114,10 @@
         background-color: #FFD2D2;
       }
 
+      #red-highlight {
+        border-color: #D8000C;
+      }
+
     </style>
   </head>
 
@@ -144,6 +148,7 @@
               placeholder="Username"
               class="form-control"
               required
+              {% if login_incorrect == True %}id="red-highlight"{% endif %}
             />
           </div>
           <!-- password -->
@@ -157,6 +162,7 @@
               placeholder="Password"
               class="form-control"
               required
+              {% if login_incorrect == True %}id="red-highlight"{% endif %}
             />
           </div>
           <div
@@ -219,6 +225,7 @@
                 placeholder="Full Name"
                 class="form-control"
                 required
+                {% if reg_incorrect.name %}id="red-highlight"{% endif %}
               />
             </div>
             <span class="valid input-group-append mb-3" {% if reg_incorrect.name %}id="error"{% endif %}>
@@ -238,17 +245,28 @@
                 placeholder="Username"
                 class="form-control"
                 required
+                {% if reg_incorrect.username or reg_incorrect.unique == False %}id="red-highlight"{% endif %}
               />
             </div>
-            <span class="valid input-group-append mb-3" {% if reg_incorrect.username %}id="error"{% endif %}
-              >At least 8 characters, only letters, numbers and
-              underscore</span
-            >
-            {% if reg_incorrect.unique == False %}
-            <span class="valid input-group-append mb-3">
+
+            {% if reg_incorrect.unique == True and reg_incorrect.username == True %}
+            <span class="valid input-group-append mb-3" id="error">
+            At least 8 characters, only letters, numbers and underscore
+            </span>
+
+            {% elif reg_incorrect.unique == False %}
+            <span class="valid input-group-append mb-3" id="error">
               Username already exists
             </span>
+
+            <!-- when reg_incorrect.unique is None -->
+            {% else %}
+            <span class="valid input-group-append mb-3">
+            At least 8 characters, only letters, numbers and underscore
+            </span>
+
             {% endif %}
+            
 
             <!-- password -->
             <div class="input-group">
@@ -261,6 +279,7 @@
                 placeholder="Enter password"
                 class="form-control"
                 required
+                {% if reg_incorrect.password1 %}id="red-highlight"{% endif %}
               />
             </div>
             <span class="valid input-group-append mb-3"  {% if reg_incorrect.password1 %}id="error"{% endif %}
@@ -279,6 +298,7 @@
                 placeholder="Re-enter password"
                 class="form-control"
                 required
+                {% if reg_incorrect.password2 %}id="red-highlight"{% endif %}
               />
             </div>
             {% if reg_incorrect.password2 %}

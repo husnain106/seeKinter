@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 logged_in = False
+uname = None
 
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -22,18 +23,26 @@ def home(request):
             return redirect('/myprojects')
     else:
         return render(request, 'accounts/dashboard.html')
+
+
 @csrf_exempt
 def widgets(request):
-    json_string = request.POST.get('json');
+    json_string = request.POST.get('json')
     if(json_string != None):
         print(json_string)
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
+
+
 @csrf_exempt
 def helpPage(request):
     return render(request, 'accounts/help.html')
+
+
 @csrf_exempt
 def aboutPage(request):
     return render(request, 'accounts/about.html')
+
+
 @csrf_exempt
 @never_cache
 def myProjects(request):
@@ -42,21 +51,26 @@ def myProjects(request):
                     {'name': 'title2', 'url': '#', 'id': 2},
                     {'name': 'title3', 'url': '#', 'id': 3},
                     ]
-    context = {'userprojects': userprojects}
+    context = {'userprojects': userprojects, 'uname': uname}
 
     if logged_in:
         return render(request, 'accounts/myprojects.html', context)
     else:
-        return render(request, 'accounts/login.html')
+        return render(request, 'accounts/dashboard.html')
+
 
 @csrf_exempt
 def delete_project(request, param):
     print(param)
     return redirect("/myprojects")
+
+
 @csrf_exempt
 def duplicate_project(request, param):
     print(param)
     return redirect("/myprojects")
+
+
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True)
 @never_cache
@@ -64,22 +78,32 @@ def logout(request):
     global logged_in
     if logged_in:
         logged_in = False
-        return render(request, 'accounts/dashboard.html')
+        return HttpResponse("""<html><script>window.location.replace('/');</script></html>""")
+
 
 @csrf_exempt
 def file(request, param):
     projectId = param
     print("projectId is " + projectId)
-    return render(request, 'accounts/help.html', locals()) # redirect to a dummy template
+    if not logged_in:
+        return render(request, 'accounts/dashboard.html')
+    
+    # check if the project id exists
+    exists = True
+    if exists:
+        return render(request, 'accounts/help.html', locals()) # redirect to a dummy template
+    else:
+        return render(request, 'accounts/file_error.html')
+
 
 # @unauthenticated_user
-@csrf_exempt
 @never_cache
 def login(request):
     global uname
     global logged_in
     if logged_in:
-        return redirect('/myprojects')
+        # return redirect('/myprojects')
+        return HttpResponse("""<html><script>window.location.replace('/myprojects');</script></html>""")
     else:
         def check_login(username, password, users):
             for user_detail in users:
@@ -101,14 +125,17 @@ def login(request):
         mycursor = mydb.cursor()
         mycursor.execute("SELECT * FROM user_details")
         myresult = mycursor.fetchall()
+
         if (check_login(username, password, myresult)):
             response = redirect("/myprojects")
             logged_in = True
             uname = username
             return response
-        return render(request, 'accounts/dashboard.html')
+        
+        return render(request, 'accounts/dashboard.html', {'login_incorrect': True})
 
-@csrf_exempt
+@never_cache   
+@cache_control(no_cache=True, must_revalidate=True)
 def signup(request):
     mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
@@ -180,10 +207,16 @@ def signup(request):
     def passwordcheck(pass1, pass2):
         pass_format= (atleastone(pass1, string.ascii_letters) and atleastone(pass1, string.digits)
         and atleastone(pass1, string.punctuation))
+
         pass_same= False
         if pass1 == pass2:
             pass_same= True
+            reg_incorrect['password2'] = False
+
         pass_range = length(pass1, 8, 30)
+        if (pass_format and pass_range):
+            reg_incorrect['password1'] = False
+
         return (pass_format and pass_same and pass_range)
 
 #username
@@ -193,6 +226,7 @@ def signup(request):
         #all digits, letters and punctuation symbols
         username_format=allinclude(username, control)
         unique= username_exist(username)
+        reg_incorrect['unique'] = unique
         username_range= length(username, 8, 20)
         return (username_format and unique and username_range)
 
@@ -208,13 +242,17 @@ def signup(request):
     pass1 = request.POST.get('regis_password1')
     pass2 = request.POST.get('regis_password2')
 
+    reg_incorrect = {'name': True, 'username': True, 'password1': True, 'password2': True, 'unique': False}
+
     if namecheck(name):
         print("name is in the correct format")
+        reg_incorrect['name'] = False
     else:
         print("name is in incorrect format")
 
     if usernamecheck(username):
         print("username is in the correct format")
+        reg_incorrect['username'] = False
     else:
         print("username is in incorrect format")
         
@@ -226,4 +264,5 @@ def signup(request):
     if namecheck(name) and usernamecheck(username) and passwordcheck(pass1,pass2):
         pass1 = make_password(pass1)
         save(name, username, pass1)
-    return HttpResponse("""<html><script>window.location.replace('/');</script></html>""")
+    context = {'reg_incorrect': reg_incorrect}
+    return render(request, 'accounts/dashboard.html', context)
