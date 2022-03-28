@@ -1,5 +1,6 @@
 from email import message
 import imp
+from unicodedata import name
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
@@ -13,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 logged_in = False
-uname = None
+name = None
 
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -47,11 +48,11 @@ def aboutPage(request):
 @never_cache
 def myProjects(request):
     # testing data, context should be a dictionary
-    userprojects = [{'name': 'title1', 'url': '#', 'id': 1},
-                    {'name': 'title2', 'url': '#', 'id': 2},
-                    {'name': 'title3', 'url': '#', 'id': 3},
+    userprojects = [{'name': 'title1', 'id': 1},
+                    {'name': 'title2', 'id': 2},
+                    {'name': 'title3', 'id': 3},
                     ]
-    context = {'userprojects': userprojects, 'uname': uname}
+    context = {'userprojects': userprojects, 'name': name}
 
     if logged_in:
         return render(request, 'accounts/myprojects.html', context)
@@ -109,6 +110,8 @@ def login(request):
             for user_detail in users:
                 if (user_detail[0] == username and check_password(password.strip(), user_detail[2].strip())):
                     print("Login succesful, welcome " + user_detail[1])
+                    global name
+                    name = user_detail[1]
                     return True
             return False
         
