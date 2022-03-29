@@ -45,7 +45,11 @@ def save_project():
     pass
 
 def save_new_project():
-    pass
+    sql = "INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
+    val = ("Project_Name","")
+    mycursor.execute(sql, val)
+    mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
+    mydb.commit() 
 
 @csrf_exempt
 def widgets(request):
@@ -83,7 +87,6 @@ def myProjects(request):
         mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
         myproject = mycursor.fetchone()
         userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
-        print(userprojects)
     context = {'userprojects': userprojects, 'name': name}
     if logged_in:
         return render(request, 'accounts/myprojects.html', context)
@@ -103,12 +106,10 @@ def delete_project(request, param):
 @csrf_exempt
 def duplicate_project(request, param):
     cur_proj= (userprojects[int(param)-2])
-
-    #DECLARE @inserted TABLE (project_id INT)
     sql="INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
-    val=(cur_proj['name'], cur_proj['JSON'])
+    copy_name = str("copy" + cur_proj['name'])
+    val=(copy_name, cur_proj['JSON'])
     mycursor.execute(sql,val)
-    print(mycursor.lastrowid)
     mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
     mydb.commit()  
     return redirect("/myprojects")
