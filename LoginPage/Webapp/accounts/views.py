@@ -51,8 +51,10 @@ def save_new_project():
 def widgets(request):
     global logged_in
     json_string = request.POST.get('json')
+    project_name = request.POST.get('p_name')
     if(json_string != None):
         print(json_string)
+        print(project_name)
         save_project()
     else:
         print("testing")
