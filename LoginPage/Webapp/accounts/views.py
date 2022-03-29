@@ -131,6 +131,9 @@ def file(request, param):
     # check if the project id exists
     exists = True
     if exists:
+        print(projectId)
+        # send the json string here, husnain!
+        json_string
         return render(request, 'accounts/project_saved.html', locals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')
