@@ -65,7 +65,7 @@ def myProjects(request):
     for project in myresult:
         mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
         myproject = mycursor.fetchone()
-        userprojects.append({'name': myproject[1], 'id':myproject[0]})
+        userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
         print(userprojects)
     context = {'userprojects': userprojects, 'name': name}
     if logged_in:
@@ -79,13 +79,21 @@ def delete_project(request, param):
     current_projectid = (userprojects[int(param)-2]['id'])
     mycursor.execute("DELETE FROM user_access WHERE project_id = %s", (current_projectid,))
     mycursor.execute("DELETE FROM projects WHERE project_id = %s", (current_projectid,))
+    mydb.commit()
     return redirect("/myprojects")
 
 
 @csrf_exempt
 def duplicate_project(request, param):
-    print(param)
-    print("tesing duplicate")
+    cur_proj= (userprojects[int(param)-2])
+
+    #DECLARE @inserted TABLE (project_id INT)
+    sql="INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
+    val=(cur_proj['name'], cur_proj['JSON'])
+    mycursor.execute(sql,val)
+    print(mycursor.lastrowid)
+    mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
+    mydb.commit()  
     return redirect("/myprojects")
 
 
