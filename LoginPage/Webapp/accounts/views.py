@@ -16,6 +16,15 @@ from django.views.decorators.csrf import csrf_exempt
 logged_in = False
 name = None
 
+mydb = mysql.connector.connect(
+    host="us-cdbr-east-05.cleardb.net",
+    user="b86a52dbcfe302",
+    password="d7707b58",
+    database="heroku_933ea9c9e598adc",
+)
+
+mycursor = mydb.cursor()
+
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
@@ -47,11 +56,18 @@ def aboutPage(request):
 @csrf_exempt
 @never_cache
 def myProjects(request):
-    # testing data, context should be a dictionary
-    userprojects = [{'name': 'title1', 'id': 1},
-                    {'name': 'title2', 'id': 2},
-                    {'name': 'title3', 'id': 3},
-                    ]
+        # testing data, context should be a dictionary
+    userprojects = []
+
+
+    mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
+    myresult = mycursor.fetchall()
+    for project in myresult:
+        mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
+        myproject = mycursor.fetchone()
+        print(myproject)
+        userprojects.append({'name': myproject[1], 'id':myproject[0]})
+
     context = {'userprojects': userprojects, 'name': name}
 
     if logged_in:
@@ -118,14 +134,6 @@ def login(request):
         username = request.POST.get('login_username')
         password = request.POST.get('login_password')
 
-        mydb = mysql.connector.connect(
-        host="dbhost.cs.man.ac.uk",
-        user="p73848hs",
-        password="Ali09876",
-        database="2021_comp10120_r11"
-        )
-
-        mycursor = mydb.cursor()
         mycursor.execute("SELECT * FROM user_details")
         myresult = mycursor.fetchall()
 
@@ -140,14 +148,6 @@ def login(request):
 @never_cache   
 @cache_control(no_cache=True, must_revalidate=True)
 def signup(request):
-    mydb = mysql.connector.connect(
-    host="dbhost.cs.man.ac.uk",
-    user="p73848hs",
-    password="Ali09876",
-    database="2021_comp10120_r11"
-    )
-
-    mycursor = mydb.cursor()
 
 #pass a string and list as parameters
 #checks if all the characters in string are from the list
