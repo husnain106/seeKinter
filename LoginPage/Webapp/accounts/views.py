@@ -41,6 +41,7 @@ def project_saved(request):
     return render(request, 'accounts/project_saved.html')
 
 def save_project(json_string):
+    global logged_in
     sql = "UPDATE projects SET JSON_encoding = %s WHERE project_id = %s"
     val = (json_string,currentopen_projectid)
     mycursor.execute(sql, val)
@@ -48,6 +49,7 @@ def save_project(json_string):
 
 def save_new_project():
     global currentopen_projectid
+    global logged_in
     sql = "INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
     val = ("Project_Name","")
     mycursor.execute(sql, val)
@@ -68,6 +70,7 @@ def widgets(request):
 
 @csrf_exempt
 def aboutPage(request):
+    global logged_in
     return render(request, 'accounts/about.html')
 
 
@@ -75,6 +78,7 @@ def aboutPage(request):
 @never_cache
 def myProjects(request):
     global userprojects
+    global logged_in
     userprojects =[]
     mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
     myresult = mycursor.fetchall()
@@ -91,6 +95,7 @@ def myProjects(request):
 
 @csrf_exempt
 def delete_project(request, param):
+    global logged_in
     current_projectid = (userprojects[int(param)-2]['id'])
     mycursor.execute("DELETE FROM user_access WHERE project_id = %s", (current_projectid,))
     mycursor.execute("DELETE FROM projects WHERE project_id = %s", (current_projectid,))
@@ -100,6 +105,7 @@ def delete_project(request, param):
 
 @csrf_exempt
 def duplicate_project(request, param):
+    global logged_in
     cur_proj= (userprojects[int(param)-2])
     sql="INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
     copy_name = str("copy" + cur_proj['name'])
@@ -108,7 +114,6 @@ def duplicate_project(request, param):
     mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
     mydb.commit()  
     return redirect("/myprojects")
-
 
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True)
@@ -122,6 +127,7 @@ def logout(request):
 
 @csrf_exempt
 def file(request, param):
+    global logged_in
     projectId = param
     print("projectId is " + projectId)
     if not logged_in:
@@ -132,9 +138,10 @@ def file(request, param):
     exists = True
     if exists:
         print(projectId)
+        print(logged_in)
         # send the json string here, husnain!
-        json_string
-        return render(request, 'accounts/project_saved.html', locals()) # redirect to a dummy template
+        json_string = ""
+        return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')
 
@@ -173,7 +180,6 @@ def login(request):
 @never_cache   
 @cache_control(no_cache=True, must_revalidate=True)
 def signup(request):
-
 #pass a string and list as parameters
 #checks if all the characters in string are from the list
     def allinclude(string, control):
