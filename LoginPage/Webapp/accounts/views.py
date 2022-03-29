@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 logged_in = False
 name = None
 userprojects = []
+currentopen_projectid = ""
 
 mydb = mysql.connector.connect(
     host="us-cdbr-east-05.cleardb.net",
@@ -41,13 +42,18 @@ def project_saved(request):
     global logged_in
     return render(request, 'accounts/project_saved.html')
 
-def save_project():
-    pass
+def save_project(json_string):
+    sql = "UPDATE projects SET JSON_encoding = %s WHERE project_id = %s"
+    val = (json_string,currentopen_projectid)
+    mycursor.execute(sql, val)
+    mydb.commit() 
 
 def save_new_project():
+    global currentopen_projectid
     sql = "INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
     val = ("Project_Name","")
     mycursor.execute(sql, val)
+    currentopen_projectid = (mycursor.lastrowid)
     mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
     mydb.commit() 
 
@@ -57,11 +63,8 @@ def widgets(request):
     json_string = request.POST.get('json')
     project_name = request.POST.get('p_name')
     if(json_string != None):
-        print(json_string)
-        print(project_name)
-        save_project()
+        save_project(json_string)
     else:
-        print("testing")
         save_new_project()
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
