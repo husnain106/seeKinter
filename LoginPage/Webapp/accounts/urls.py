@@ -13,7 +13,7 @@ urlpatterns = [
     re_path('^myprojects/file/(\w)',views.file),
     path('project/', views.widgets),
     re_path('^myprojects/delete-project/(\w)', views.delete_project),
-    re_path('^myprojects/duplicate-project/(\w)', views.duplicate_project)
+    re_path('^myprojects/duplicate-project/(\w)', views.duplicate_project),
 ] 
 
 

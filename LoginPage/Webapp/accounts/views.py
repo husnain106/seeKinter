@@ -36,12 +36,27 @@ def home(request):
     else:
         return render(request, 'accounts/dashboard.html')
 
+@csrf_exempt
+def project_saved(request):
+    global logged_in
+    return render(request, 'accounts/project_saved.html')
+
+def save_project():
+    pass
+
+def save_new_project():
+    pass
 
 @csrf_exempt
 def widgets(request):
+    global logged_in
     json_string = request.POST.get('json')
     if(json_string != None):
         print(json_string)
+        save_project()
+    else:
+        print("testing")
+        save_new_project()
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
 
