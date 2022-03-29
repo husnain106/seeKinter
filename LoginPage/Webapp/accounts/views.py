@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 logged_in = False
 name = None
+userprojects = []
 
 mydb = mysql.connector.connect(
     host="us-cdbr-east-05.cleardb.net",
@@ -24,6 +25,7 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+
 
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -56,20 +58,16 @@ def aboutPage(request):
 @csrf_exempt
 @never_cache
 def myProjects(request):
-        # testing data, context should be a dictionary
-    userprojects = []
-
-
+    global userprojects
+    userprojects =[]
     mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
     myresult = mycursor.fetchall()
     for project in myresult:
         mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
         myproject = mycursor.fetchone()
-        print(myproject)
         userprojects.append({'name': myproject[1], 'id':myproject[0]})
-
+        print(userprojects)
     context = {'userprojects': userprojects, 'name': name}
-
     if logged_in:
         return render(request, 'accounts/myprojects.html', context)
     else:
@@ -78,13 +76,16 @@ def myProjects(request):
 
 @csrf_exempt
 def delete_project(request, param):
-    print(param)
+    current_projectid = (userprojects[int(param)-2]['id'])
+    mycursor.execute("DELETE FROM user_access WHERE project_id = %s", (current_projectid,))
+    mycursor.execute("DELETE FROM projects WHERE project_id = %s", (current_projectid,))
     return redirect("/myprojects")
 
 
 @csrf_exempt
 def duplicate_project(request, param):
     print(param)
+    print("tesing duplicate")
     return redirect("/myprojects")
 
 
@@ -138,9 +139,9 @@ def login(request):
         myresult = mycursor.fetchall()
 
         if (check_login(username, password, myresult)):
-            response = redirect("/myprojects")
             logged_in = True
             uname = username
+            response = redirect("/myprojects")
             return response
         
         return render(request, 'accounts/dashboard.html', {'login_incorrect': True})
