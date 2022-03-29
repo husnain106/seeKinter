@@ -65,12 +65,6 @@ def widgets(request):
         save_new_project()
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
-
-@csrf_exempt
-def helpPage(request):
-    return render(request, 'accounts/help.html')
-
-
 @csrf_exempt
 def aboutPage(request):
     return render(request, 'accounts/about.html')
@@ -131,14 +125,14 @@ def file(request, param):
     print("projectId is " + projectId)
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
-    
+    # if projectId != None:
+    #     return redirect("project-saved/")
     # check if the project id exists
     exists = True
     if exists:
-        return render(request, 'accounts/help.html', locals()) # redirect to a dummy template
+        return render(request, 'accounts/project_saved.html', locals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')
-
 
 # @unauthenticated_user
 @never_cache

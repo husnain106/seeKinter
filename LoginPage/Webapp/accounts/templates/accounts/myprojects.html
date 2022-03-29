@@ -220,6 +220,14 @@
 
     </style>
 
+    <script type="text/javascript">
+      // function to_backend(project_id){
+      //   document.body.innerHTML += '<form id="dynForm" action="" method="post"><input id="tmp" type="hidden" name="pid"></form>';
+      //   document.getElementById("tmp").value = project_id;
+      //   document.getElementById("dynForm").submit();
+      // }
+    </script>
+
 
   </head>
 
@@ -280,7 +288,7 @@
       <div class='card project-card' id='project{{item.id}}'>
         <!-- send data using url -->
         <!-- when doubleclick, redirect to myprojects/file/projectId -->
-        <div class='user-project-link' type='button' id='file/{{item.id}}' ondblclick="window.location=id">
+        <div class='user-project-link' type='button' id='project_saved/{{item.id}}' onclick='window.location = id'>
           <div class='card-body'>
             <input disabled class='pojcet-title' id='title{{item.id}}' value={{item.name}}>
           </div>
