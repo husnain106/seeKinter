@@ -17,10 +17,10 @@ userprojects = []
 currentopen_projectid = ""
 
 mydb = mysql.connector.connect(
-    host="us-cdbr-east-05.cleardb.net",
-    user="b86a52dbcfe302",
-    password="d7707b58",
-    database="heroku_933ea9c9e598adc",
+    host="dbhost.cs.man.ac.uk",
+    user="p73848hs",
+    password="Ali09876",
+    database="2021_comp10120_r11"
 )
 
 mycursor = mydb.cursor()
