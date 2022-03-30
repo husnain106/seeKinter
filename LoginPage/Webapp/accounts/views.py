@@ -72,14 +72,9 @@ def save_new_project():
 def widgets(request):
     global logged_in
     global currentopen_projectid
-    json_string = request.POST.get('json')
-    project_name = request.POST.get('p_name')
-    if(json_string != None and currentopen_projectid != -1):
-        save_project(project_name, json_string)
-    else:
-        save_new_project()
-        return HttpResponse("<html><script>window.location.replace('/myprojects/project_saved/" + str(currentopen_projectid) + "');</script></html>")
-    return render(request, 'accounts/project.html', {"logged_in":logged_in})
+    save_new_project()
+    return HttpResponse("<html><script>window.location.replace('/myprojects/project_saved/" + str(currentopen_projectid) + "');</script></html>")
+#    return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
 @csrf_exempt
 def aboutPage(request):
@@ -98,7 +93,7 @@ def myProjects(request):
         mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
         myresult = mycursor.fetchall()
         for project in myresult:
-            mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
+            mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project[0],))
             myproject = mycursor.fetchone()
             userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
             context = {'userprojects': userprojects, 'name': name}
@@ -145,18 +140,29 @@ def logout(request):
 def file(request, param):
     global logged_in
     projectId = param
-    print("projectId is " + projectId)
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
     # if projectId != None:
     #     return redirect("project-saved/")
     # check if the project id exists
+    json_string = request.POST.get('json')
+    project_name = request.POST.get('p_name')
+    if(json_string != None):
+        print(json_string, project_name)
+    #    if(json_string != None and currentopen_projectid != -1):
+        save_project(project_name, json_string)
+#        
     exists = True
     if exists:
-        print(projectId)
-        print(logged_in)
         # send the json string here, husnain!
-        json_string = ""
+        mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (projectId,))
+        current_project = mycursor.fetchone()
+
+        #fetched values
+        currentopen_projectid = current_project[0]
+        currentopen_projectname = current_project[1]
+        json_string = current_project[2]
+
         return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')
