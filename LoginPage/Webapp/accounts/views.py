@@ -93,15 +93,15 @@ def aboutPage(request):
 def myProjects(request):
     global userprojects
     global logged_in
-    userprojects =[]
-    mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
-    myresult = mycursor.fetchall()
-    for project in myresult:
-        mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
-        myproject = mycursor.fetchone()
-        userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
-    context = {'userprojects': userprojects, 'name': name}
-    if logged_in:
+    if logged_in:  
+        userprojects =[]
+        mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
+        myresult = mycursor.fetchall()
+        for project in myresult:
+            mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project))
+            myproject = mycursor.fetchone()
+            userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
+            context = {'userprojects': userprojects, 'name': name}
         return render(request, 'accounts/myprojects.html', context)
     else:
         return render(request, 'accounts/dashboard.html')
