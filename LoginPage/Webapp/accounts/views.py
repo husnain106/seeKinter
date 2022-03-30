@@ -15,6 +15,7 @@ logged_in = False
 name = None
 userprojects = []
 currentopen_projectid = ""
+global json_string
 
 mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
@@ -88,6 +89,7 @@ def aboutPage(request):
 def myProjects(request):
     global userprojects
     global logged_in
+    context = {}
     if logged_in:  
         userprojects =[]
         mycursor.execute("SELECT project_id FROM user_access WHERE username = %s", (uname,))
@@ -139,6 +141,7 @@ def logout(request):
 @never_cache
 def file(request, param):
     global logged_in
+    global json_string
     projectId = param
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
@@ -162,7 +165,8 @@ def file(request, param):
         currentopen_projectid = current_project[0]
         currentopen_projectname = current_project[1]
         json_string = current_project[2]
-
+        print(json_string)
+        print(globals())
         return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')

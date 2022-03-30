@@ -334,9 +334,10 @@
 
         function render_interface(){
             inter = new Interface(); 
-            document.getElementById('startButton').remove();
-            alert({{json_string}});
-            inter.exportProjectToJSON({{json_string}});
+            // document.getElementById('startButton').remove();
+            alert("hi");
+            alert("{{json_string|escapejs}}");
+            inter.importProjectFromJSON('{{json_string|escapejs}}');
         }
 
         window.onload = function() {
