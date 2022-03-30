@@ -51,7 +51,7 @@ def save_project(project_name, json_string):
     mycursor.execute(sql, val)
     mydb.commit()
     sql = "UPDATE projects SET project_name = %s WHERE project_id = %s"
-    val = (project_name, currentopen_projectid)
+    val = (project_name.strip("<br>"), currentopen_projectid)
     mycursor.execute(sql,val)
     mydb.commit() 
 
