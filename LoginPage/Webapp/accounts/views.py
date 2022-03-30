@@ -24,12 +24,15 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+currentopen_projectid = -1
 
 
 @csrf_exempt
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
     global logged_in
+    global currentopen_projectid
+    currentopen_projectid = -1
     if logged_in:
             return redirect('/myprojects')
     else:
@@ -40,11 +43,16 @@ def project_saved(request):
     global logged_in
     return render(request, 'accounts/project_saved.html')
 
-def save_project(json_string):
+def save_project(project_name, json_string):
     global logged_in
+    global currentopen_projectid
     sql = "UPDATE projects SET JSON_encoding = %s WHERE project_id = %s"
     val = (json_string,currentopen_projectid)
     mycursor.execute(sql, val)
+    mydb.commit()
+    sql = "UPDATE projects SET project_name = %s WHERE project_id = %s"
+    val = (project_name, currentopen_projectid)
+    mycursor.execute(sql,val)
     mydb.commit() 
 
 def save_new_project():
@@ -55,17 +63,22 @@ def save_new_project():
     mycursor.execute(sql, val)
     currentopen_projectid = (mycursor.lastrowid)
     mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
-    mydb.commit() 
+    mydb.commit()
+
 
 @csrf_exempt
+@cache_control(no_cache=True, must_revalidate=True)
+@never_cache
 def widgets(request):
     global logged_in
+    global currentopen_projectid
     json_string = request.POST.get('json')
     project_name = request.POST.get('p_name')
-    if(json_string != None):
-        save_project(json_string)
+    if(json_string != None and currentopen_projectid != -1):
+        save_project(project_name, json_string)
     else:
         save_new_project()
+        return HttpResponse("<html><script>window.location.replace('/myprojects/project_saved/" + str(currentopen_projectid) + "');</script></html>")
     return render(request, 'accounts/project.html', {"logged_in":logged_in})
 
 @csrf_exempt
@@ -76,6 +89,7 @@ def aboutPage(request):
 
 @csrf_exempt
 @never_cache
+@cache_control(no_cache=True, must_revalidate=True)
 def myProjects(request):
     global userprojects
     global logged_in
@@ -96,9 +110,8 @@ def myProjects(request):
 @csrf_exempt
 def delete_project(request, param):
     global logged_in
-    current_projectid = (userprojects[int(param)-2]['id'])
-    mycursor.execute("DELETE FROM user_access WHERE project_id = %s", (current_projectid,))
-    mycursor.execute("DELETE FROM projects WHERE project_id = %s", (current_projectid,))
+    mycursor.execute("DELETE FROM user_access WHERE project_id = %s", (param,))
+    mycursor.execute("DELETE FROM projects WHERE project_id = %s", (param,))
     mydb.commit()
     return redirect("/myprojects")
 
@@ -106,10 +119,11 @@ def delete_project(request, param):
 @csrf_exempt
 def duplicate_project(request, param):
     global logged_in
-    cur_proj= (userprojects[int(param)-2])
+    mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (param,))
+    cur_proj= mycursor.fetchone()
     sql="INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
-    copy_name = str("copy" + cur_proj['name'])
-    val=(copy_name, cur_proj['JSON'])
+    copy_name = "copy" + str(cur_proj[1])
+    val=(copy_name, cur_proj[2])
     mycursor.execute(sql,val)
     mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
     mydb.commit()  
@@ -126,6 +140,8 @@ def logout(request):
 
 
 @csrf_exempt
+@cache_control(no_cache=True, must_revalidate=True)
+@never_cache
 def file(request, param):
     global logged_in
     projectId = param
@@ -146,7 +162,8 @@ def file(request, param):
         return render(request, 'accounts/file_error.html')
 
 # @unauthenticated_user
-@never_cache
+@never_cache   
+@cache_control(no_cache=True, must_revalidate=True)
 def login(request):
     global uname
     global logged_in
