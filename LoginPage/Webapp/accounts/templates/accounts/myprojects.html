@@ -254,7 +254,7 @@
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="right: 0; left: auto; margin-top: 6px;">
             <h6 class="dropdown-header">{{name}}</h6>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item account-item" href="#">Settings</a></li>
+            <!-- <li><a class="dropdown-item account-item" href="#">Settings</a></li> -->
             <li><a class="dropdown-item account-item" href="{% url 'logout'%}">Logout</a></li>
           </ul>
         </div>
@@ -299,8 +299,8 @@
           <button class='dropdown-toggle project-dropdown' type='button' id='projectDropdown1' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           </button>
           <ul class='dropdown-menu project-menu' aria-labelledby='projectDropdown1'>
-            <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_self'>Open</a></li>
-            <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_blank'>Open in new tab</a></li>
+            <!-- <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_self'>Open</a></li>
+            <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_blank'>Open in new tab</a></li> -->
             <li><hr class='dropdown-divider'></li>
             <!-- <li class='dropdown-item project-item' type ='button' id='rename{{item.id}}' value={{item.id}} onclick='rename_projects(value)'>Rename</li> -->
             <a href="duplicate-project/{{item.id}}"><li class='dropdown-item project-item' type ='button' id='copy{{item.id}}' value={{item.id}}>Duplicate</li></a>

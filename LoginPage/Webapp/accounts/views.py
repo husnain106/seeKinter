@@ -59,12 +59,13 @@ def save_project(project_name, json_string):
 def save_new_project():
     global currentopen_projectid
     global logged_in
-    sql = "INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
-    val = ("Project_Name","")
-    mycursor.execute(sql, val)
-    currentopen_projectid = (mycursor.lastrowid)
-    mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
-    mydb.commit()
+    if logged_in:
+        sql = "INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
+        val = ("Project_Name","")
+        mycursor.execute(sql, val)
+        currentopen_projectid = (mycursor.lastrowid)
+        mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
+        mydb.commit()
 
 
 @csrf_exempt
@@ -73,9 +74,10 @@ def save_new_project():
 def widgets(request):
     global logged_in
     global currentopen_projectid
-    save_new_project()
-    return HttpResponse("<html><script>window.location.replace('/myprojects/project_saved/" + str(currentopen_projectid) + "');</script></html>")
-#    return render(request, 'accounts/project.html', {"logged_in":logged_in})
+    if logged_in:
+        save_new_project()
+        return HttpResponse("<html><script>window.location.replace('/myprojects/project_saved/" + str(currentopen_projectid) + "');</script></html>")
+    return render(request, 'accounts/project.html')
 
 @csrf_exempt
 def aboutPage(request):
