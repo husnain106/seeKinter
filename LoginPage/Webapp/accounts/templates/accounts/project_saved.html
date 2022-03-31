@@ -337,6 +337,7 @@
             // document.getElementById('startButton').remove();
             // alert("hi");
             // alert("{{json_string|escapejs}}");
+            document.getElementById("project_name").innerHTML = "{{currentopen_projectname}}"
             inter.importProjectFromJSON('{{json_string|escapejs}}');
         }
 

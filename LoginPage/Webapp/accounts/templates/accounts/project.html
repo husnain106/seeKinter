@@ -332,6 +332,14 @@
             document.getElementById("dynForm").submit();
             
         }
+
+        function render_interface(){
+            inter = new Interface(); 
+        }
+
+        window.onload = function() {
+          render_interface();
+        };
     </script>
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -536,7 +544,7 @@
 
             <ul class="list-unstyled components">
                 <!-- <p contenteditable="true" id="project_name">Project Name</p> -->
-                <button id="startButton" type="button" class="btn btn-info" onclick="inter = new Interface(); document.getElementById('startButton').remove();">Start Project</button>
+                <!-- <button id="startButton" type="button" class="btn btn-info" onclick="inter = new Interface(); document.getElementById('startButton').remove();">Start Project</button> -->
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Add Widgets</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">

@@ -144,6 +144,7 @@ def logout(request):
 def file(request, param):
     global logged_in
     global json_string
+    global currentopen_projectname
     projectId = param
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
