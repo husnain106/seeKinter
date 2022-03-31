@@ -323,20 +323,14 @@
 
         function save(){
             var str = inter.exportProjectToJSON();
-            alert(str);
             document.body.innerHTML += '<form id="dynForm" onsubmit = "return false;" action="" method="post"><input id="tmp" type="hidden" name="json"><input id="tmp2" type="hidden" name="p_name"></form>';
             document.getElementById("tmp").value = str;
             document.getElementById("tmp2").value = document.getElementById("project_name").innerHTML;
-            // alert(document.getElementById("tmp2").value);
-            // alert(document.getElementById("tmp").value);
             document.getElementById("dynForm").submit();  
         }
 
         function render_interface(){
             inter = new Interface(); 
-            // document.getElementById('startButton').remove();
-            // alert("hi");
-            // alert("{{json_string|escapejs}}");
             document.getElementById("project_name").innerHTML = "{{currentopen_projectname}}"
             inter.importProjectFromJSON('{{json_string|escapejs}}');
         }

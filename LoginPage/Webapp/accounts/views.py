@@ -89,6 +89,7 @@ def aboutPage(request):
 @never_cache
 @cache_control(no_cache=True, must_revalidate=True)
 def myProjects(request):
+    global name
     global userprojects
     global logged_in
     context = {}
@@ -100,6 +101,7 @@ def myProjects(request):
             mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project[0],))
             myproject = mycursor.fetchone()
             userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
+            print(name)
             context = {'userprojects': userprojects, 'name': name}
         return render(request, 'accounts/myprojects.html', context)
     else:
@@ -176,6 +178,7 @@ def file(request, param):
 @never_cache   
 @cache_control(no_cache=True, must_revalidate=True)
 def login(request):
+    
     global uname
     global logged_in
     if logged_in:
@@ -185,7 +188,6 @@ def login(request):
         def check_login(username, password, users):
             for user_detail in users:
                 if (user_detail[0] == username and check_password(password.strip(), user_detail[2].strip())):
-                    print("Login succesful, welcome " + user_detail[1])
                     global name
                     name = user_detail[1]
                     return True
@@ -297,7 +299,6 @@ def signup(request):
         val = (username, name, password)
         mycursor.execute(sql,val)
         mydb.commit()
-        print("Sign up successfull")
 
     name = request.POST.get('regis_name')
     username = request.POST.get('regis_username')
@@ -306,23 +307,8 @@ def signup(request):
 
     reg_incorrect = {'name': True, 'username': True, 'password1': True, 'password2': True, 'unique': False}
 
-    if namecheck(name):
-        print("name is in the correct format")
-        reg_incorrect['name'] = False
-    else:
-        print("name is in incorrect format")
-
     if usernamecheck(username):
-        print("username is in the correct format")
-        reg_incorrect['username'] = False
-    else:
-        print("username is in incorrect format")
-        
-    if passwordcheck(pass1,pass2):
-        print("password is in the correct format")
-    else:
-        print("password is in incorrect format")
-    
+        reg_incorrect['username'] = False        
     if namecheck(name) and usernamecheck(username) and passwordcheck(pass1,pass2):
         pass1 = make_password(pass1)
         save(name, username, pass1)
