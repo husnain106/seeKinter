@@ -151,28 +151,31 @@ def file(request, param):
     currentopen_projectid = param
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
-
-    permitted_id = []
+    # if projectId != None:
+    #     return redirect("project-saved/")
+    # check if the project id exists
+    json_string = request.POST.get('json')
+    project_name = request.POST.get('p_name')
+    if(json_string != None):
+    #    if(json_string != None and currentopen_projectid != -1):
+        save_project(project_name, json_string)
+#        
+    ids = []
     for project in userprojects:
-        permitted_id.append(str(project['id']))
-    print(permitted_id)
-
-    if param in permitted_id:
+        ids.append(str(project['id']))
+    exists = param in ids
+    if exists:
+        # send the json string here, husnain!
         mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (currentopen_projectid,))
         current_project = mycursor.fetchone()
 
-        # fetched values
+        #fetched values
         currentopen_projectid = current_project[0]
         currentopen_projectname = current_project[1]
         json_string = current_project[2]
-        json_string = request.POST.get('json')
-        project_name = request.POST.get('p_name')
-        if(json_string != None):
-            save_project(project_name, json_string)
-        return render(request, 'accounts/project_saved.html', globals())
+        return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')
-        
 
 # @unauthenticated_user
 @never_cache   
