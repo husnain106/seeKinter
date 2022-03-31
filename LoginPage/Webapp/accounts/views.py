@@ -16,6 +16,7 @@ name = None
 userprojects = []
 currentopen_projectid = ""
 global json_string
+ids = []
 
 mydb = mysql.connector.connect(
     host="dbhost.cs.man.ac.uk",
@@ -66,6 +67,7 @@ def save_new_project():
         currentopen_projectid = (mycursor.lastrowid)
         mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
         mydb.commit()
+        ids.append(str(currentopen_projectid))
 
 
 @csrf_exempt
@@ -148,6 +150,7 @@ def file(request, param):
     global currentopen_projectname
     global currentopen_projectid
     global userprojects
+    global ids
     currentopen_projectid = param
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
@@ -160,7 +163,7 @@ def file(request, param):
     #    if(json_string != None and currentopen_projectid != -1):
         save_project(project_name, json_string)
 #        
-    ids = []
+    
     for project in userprojects:
         ids.append(str(project['id']))
     exists = param in ids
