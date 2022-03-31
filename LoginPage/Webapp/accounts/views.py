@@ -101,8 +101,7 @@ def myProjects(request):
             mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (project[0],))
             myproject = mycursor.fetchone()
             userprojects.append({'name': myproject[1], 'id':myproject[0], 'JSON':myproject[2]})
-            print(name)
-            context = {'userprojects': userprojects, 'name': name}
+        context = {'userprojects': userprojects, 'name': name}
         return render(request, 'accounts/myprojects.html', context)
     else:
         return render(request, 'accounts/dashboard.html')
@@ -178,7 +177,7 @@ def file(request, param):
 @never_cache   
 @cache_control(no_cache=True, must_revalidate=True)
 def login(request):
-    
+    global name
     global uname
     global logged_in
     if logged_in:
@@ -186,9 +185,9 @@ def login(request):
         return HttpResponse("""<html><script>window.location.replace('/myprojects');</script></html>""")
     else:
         def check_login(username, password, users):
+            global name
             for user_detail in users:
                 if (user_detail[0] == username and check_password(password.strip(), user_detail[2].strip())):
-                    global name
                     name = user_detail[1]
                     return True
             return False
@@ -200,7 +199,7 @@ def login(request):
         myresult = mycursor.fetchall()
 
         if (check_login(username, password, myresult)):
-            logged_in = True
+            logged_in = True    
             uname = username
             response = redirect("/myprojects")
             return response
