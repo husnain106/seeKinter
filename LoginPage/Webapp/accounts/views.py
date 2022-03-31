@@ -305,9 +305,13 @@ def signup(request):
     pass2 = request.POST.get('regis_password2')
 
     reg_incorrect = {'name': True, 'username': True, 'password1': True, 'password2': True, 'unique': False}
-
+    
+    if namecheck(name):
+        reg_incorrect['name'] = False
     if usernamecheck(username):
-        reg_incorrect['username'] = False        
+        reg_incorrect['username'] = False
+
+
     if namecheck(name) and usernamecheck(username) and passwordcheck(pass1,pass2):
         pass1 = make_password(pass1)
         save(name, username, pass1)
