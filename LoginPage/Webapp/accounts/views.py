@@ -52,7 +52,7 @@ def save_project(project_name, json_string):
     mycursor.execute(sql, val)
     mydb.commit()
     sql = "UPDATE projects SET project_name = %s WHERE project_id = %s"
-    val = (project_name.strip("<br>"), currentopen_projectid)
+    val = (project_name.replace("<br>",""), currentopen_projectid)
     mycursor.execute(sql,val)
     mydb.commit() 
 
@@ -145,7 +145,8 @@ def file(request, param):
     global logged_in
     global json_string
     global currentopen_projectname
-    projectId = param
+    global currentopen_projectid
+    currentopen_projectid = param
     if not logged_in:
         return render(request, 'accounts/dashboard.html')
     # if projectId != None:
@@ -154,22 +155,19 @@ def file(request, param):
     json_string = request.POST.get('json')
     project_name = request.POST.get('p_name')
     if(json_string != None):
-        print(json_string, project_name)
     #    if(json_string != None and currentopen_projectid != -1):
         save_project(project_name, json_string)
 #        
     exists = True
     if exists:
         # send the json string here, husnain!
-        mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (projectId,))
+        mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (currentopen_projectid,))
         current_project = mycursor.fetchone()
 
         #fetched values
         currentopen_projectid = current_project[0]
         currentopen_projectname = current_project[1]
         json_string = current_project[2]
-        print(json_string)
-        print(globals())
         return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')
