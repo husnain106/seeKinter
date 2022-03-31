@@ -77,6 +77,8 @@
                     }
                     // Applies the canvas changes if valid values provided
                     if (validChange) {
+                        var attri = 'height: ' + (parseInt(height)+180) + 'px';
+                        document.getElementById("sidebar").style.cssText += attri;
                         this.canvas.update(width, height, colour);
                     } else {
                         alert("This canvas size would be too small for the placed widgets.");
@@ -107,8 +109,10 @@
                                     '"layer":"' + String(this.widgets[i].layer) + '" , ' +
                                     '"text":"' + String(this.widgets[i].text) + '" } , ';
                 }
-                widgetJSON = widgetJSON.slice(0, -3);
-                widgetJSON += ' ]}';
+                if (this.widgets.length != 0) {
+                    widgetJSON = widgetJSON.slice(0, -3);
+                }
+                widgetJSON += ']}';
                 return widgetJSON;
             }
 
@@ -337,6 +341,10 @@
 
         window.onload = function() {
           render_interface();
+          var h = document.getElementById("widgets").children[0].style.height.slice(0, -2);
+          var attri = 'height: ' + (parseInt(h) + 180) + 'px';
+          console.log(attri);
+          document.getElementById("sidebar").style.cssText += attri;
         };
         
 
@@ -413,6 +421,8 @@
             background: #8a9ade;
             color: #fff;
             transition: all 0.3s;
+            height: 880px;
+            min-height: 510px;
         }
 
         #sidebar.active {

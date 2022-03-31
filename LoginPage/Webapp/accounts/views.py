@@ -176,6 +176,7 @@ def file(request, param):
         currentopen_projectid = current_project[0]
         currentopen_projectname = current_project[1]
         json_string = current_project[2]
+        print(json_string)
         return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')

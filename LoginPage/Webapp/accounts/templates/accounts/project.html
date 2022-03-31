@@ -77,7 +77,10 @@
                     }
                     // Applies the canvas changes if valid values provided
                     if (validChange) {
+                        var attri = 'height: ' + (parseInt(height)+180) + 'px';
+                        document.getElementById("sidebar").style.cssText += attri;
                         this.canvas.update(width, height, colour);
+                        
                     } else {
                         alert("This canvas size would be too small for the placed widgets.");
                     }
@@ -107,8 +110,10 @@
                                     '"layer":"' + String(this.widgets[i].layer) + '" , ' +
                                     '"text":"' + String(this.widgets[i].text) + '" } , ';
                 }
-                widgetJSON = widgetJSON.slice(0, -3);
-                widgetJSON += ' ]}';
+                if (this.widgets.length != 0) {
+                    widgetJSON = widgetJSON.slice(0, -3);
+                }
+                widgetJSON += ']}';
                 return widgetJSON;
             }
 
@@ -336,6 +341,9 @@
 
         window.onload = function() {
           render_interface();
+          var h = document.getElementById("widgets").children[0].style.height.slice(0, -2)
+          var attri = 'height: ' + (parseInt(h) + 180) + 'px';
+          document.getElementById("sidebar").style.cssText += attri;
         };
     </script>
     <!-- Bootstrap CSS CDN -->
@@ -354,6 +362,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: #fafafa;
+            
         }
 
         p {
@@ -410,6 +419,7 @@
             background: #8a9ade;
             color: #fff;
             transition: all 0.3s;
+            min-height: 510px;
         }
 
         #sidebar.active {
@@ -528,6 +538,8 @@
           overflow: auto;   
           margin: 0 auto;
         }*/
+
+
     </style>
 </head>
 
@@ -536,7 +548,9 @@
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
+                <a href="/">
                 <img src="{% static 'accounts/seeKinter_logo_wobg.png' %}" alt="" width="200" height="33.02752294">
+                </a>
             </div>
 
             <ul class="list-unstyled components">
