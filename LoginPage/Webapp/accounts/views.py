@@ -313,14 +313,12 @@ def signup(request):
         reg_incorrect['name'] = False
     if usernamecheck(username):
         reg_incorrect['username'] = False
-    if pass_same:
-        reg_incorrect['password2'] = False
     if passwordcheck(pass1, pass2):
         reg_incorrect['password1'] = False
-
+    if pass_same:
+        reg_incorrect['password2'] = False
 
     if namecheck(name) and usernamecheck(username) and passwordcheck(pass1,pass2):
         pass1 = make_password(pass1)
         save(name, username, pass1)
-    context = {'reg_incorrect': reg_incorrect}
-    return render(request, 'accounts/dashboard.html', context)
+    return render(request, 'accounts/dashboard.html', {'reg_incorrect': reg_incorrect})
