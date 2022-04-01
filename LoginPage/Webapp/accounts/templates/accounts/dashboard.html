@@ -229,7 +229,7 @@
               />
             </div>
             <span class="valid input-group-append mb-3" {% if reg_incorrect.name %}id="error"{% endif %}>
-              At least 2 characters
+              Between 2- 26 characters and only letters
             </span>
 
             <!-- username -->
@@ -251,7 +251,7 @@
 
             {% if reg_incorrect.unique == True and reg_incorrect.username == True %}
             <span class="valid input-group-append mb-3" id="error">
-            At least 8 characters, only letters, numbers and underscore
+            Between 8- 20 characters, only letters, numbers and underscore
             </span>
 
             {% elif reg_incorrect.unique == False %}
@@ -262,7 +262,7 @@
             <!-- when reg_incorrect.unique is None -->
             {% else %}
             <span class="valid input-group-append mb-3">
-            At least 8 characters, only letters, numbers and underscore
+            Between 8- 20 characters, only letters, numbers and underscore
             </span>
 
             {% endif %}

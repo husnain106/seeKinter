@@ -10,7 +10,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
 
-
+pass_same= False
 logged_in = False
 name = None
 userprojects = []
@@ -276,18 +276,15 @@ def signup(request):
 #passwords
 #atleaest one letter, one number, one symbol, passwords has to match, 8-30 characters
     def passwordcheck(pass1, pass2):
+        global pass_same
         pass_format= (atleastone(pass1, string.ascii_letters) and atleastone(pass1, string.digits)
         and atleastone(pass1, string.punctuation))
 
         pass_same= False
         if pass1 == pass2:
             pass_same= True
-            reg_incorrect['password2'] = False
 
         pass_range = length(pass1, 8, 30)
-        if (pass_format and pass_range):
-            reg_incorrect['password1'] = False
-
         return (pass_format and pass_same and pass_range)
 
 #username
@@ -306,7 +303,6 @@ def signup(request):
         val = (username, name, password)
         mycursor.execute(sql,val)
         mydb.commit()
-
     name = request.POST.get('regis_name')
     username = request.POST.get('regis_username')
     pass1 = request.POST.get('regis_password1')
@@ -318,6 +314,10 @@ def signup(request):
         reg_incorrect['name'] = False
     if usernamecheck(username):
         reg_incorrect['username'] = False
+    if pass_same:
+        reg_incorrect['password2'] = False
+    if passwordcheck(pass1, pass2):
+        reg_incorrect['password1'] = False
 
 
     if namecheck(name) and usernamecheck(username) and passwordcheck(pass1,pass2):
