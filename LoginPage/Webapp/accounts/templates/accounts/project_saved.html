@@ -30,31 +30,31 @@
                         case "Label":
                             let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas);
                             this.widgets.push(tempLabel);
-                            tempLabel.placeWidget();
+                            tempLabel.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Button":
                             let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas);
                             this.widgets.push(tempButton);
-                            tempButton.placeWidget();
+                            tempButton.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Checkbox":
-                            let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas);
+                            let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas, this.widgets.length);
                             this.widgets.push(tempCheckBox);
-                            tempCheckBox.placeWidget();
+                            tempCheckBox.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Radiobutton":
-                            let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas);
+                            let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas, this.widgets.length);
                             this.widgets.push(tempRadioButton);
-                            tempRadioButton.placeWidget();
+                            tempRadioButton.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Textbox":
-                            let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas);
+                            let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas, this.widgets.length);
                             this.widgets.push(tempTextBox);
-                            tempTextBox.placeWidget();
+                            tempTextBox.placeWidget(this.widgets.length - 1);
                             break;
 
                         default:
@@ -197,7 +197,7 @@
             }
 
             // Allows the widget object to edit its respective HTML element
-            placeWidget() {
+            placeWidget(arr_id) {
                 let pos = this.canvas.getPosition();
                 this.image.style.resize = "none";
                 this.image.style.position = "absolute";
@@ -205,6 +205,7 @@
                 this.image.style.height = this.height + 'px';
                 this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
                 this.image.style.top = String(150 + parseInt(this.y)) + 'px';
+                this.image.onclick = function() { alert("The WidgetID is " + arr_id); };
                 /*
                 NOTE:
                 154 is a static value we are using rather than the canvas' rectangle's position.
@@ -256,11 +257,15 @@
 
         // Check box widget class
         class CheckBox extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas) {
+            constructor(width, height, x, y, colour, layer, text, canvas, widget_id) {
+                function alert_id(){
+                    alert("The WidgetID is " + widget_id);
+                }
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Checkbox";
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "checkbox");
+                this.image.addEventListener('change', alert_id);
                 document.getElementById("widgets").appendChild(this.image);
             }
 
@@ -279,11 +284,15 @@
 
         // Radio button widget class
         class RadioButton extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas) {
+            constructor(width, height, x, y, colour, layer, text, canvas, widget_id) {
+                function alert_id(){
+                    alert("The WidgetID is " + widget_id);
+                }
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Radiobutton";
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "radio");
+                this.image.addEventListener('click', alert_id);
                 document.getElementById("widgets").appendChild(this.image);
             }
 
@@ -302,11 +311,15 @@
 
         // Text box widget class
         class TextBox extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas) {
+            constructor(width, height, x, y, colour, layer, text, canvas, widget_id) {
+                function alert_id(){
+                    alert("The WidgetID is " + widget_id);
+                }
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Textbox";
                 this.image = document.createElement("textarea");
                 this.image.setAttribute("type", "text");
+                this.image.addEventListener('click', alert_id);
                 document.getElementById("widgets").appendChild(this.image);
             }
 
