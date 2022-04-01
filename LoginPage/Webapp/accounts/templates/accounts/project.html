@@ -10,7 +10,7 @@
     <title>Project</title>
     <link rel="shortcut icon" href="{% static '../static/accounts/logo.ico' %}"/>
     <script type="text/javascript">
-        // Interface class used to manage the script and I/O
+                // Interface class used to manage the script and I/O
         class Interface {
             constructor() {
                 this.widgets = [];
@@ -28,33 +28,33 @@
                     switch (widgetType) {
                         // Chooses which type of widget to create
                         case "Label":
-                            let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas, true);
+                            let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempLabel);
-                            tempLabel.placeWidget(this.widgets.length - 1);
+                            tempLabel.placeWidget();
                             break;
 
                         case "Button":
-                            let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas, true);
+                            let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempButton);
-                            tempButton.placeWidget(this.widgets.length - 1);
+                            tempButton.placeWidget();
                             break;
 
                         case "Checkbox":
                             let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempCheckBox);
-                            tempCheckBox.placeWidget(this.widgets.length - 1);
+                            tempCheckBox.placeWidget();
                             break;
 
                         case "Radiobutton":
                             let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempRadioButton);
-                            tempRadioButton.placeWidget(this.widgets.length - 1);
+                            tempRadioButton.placeWidget();
                             break;
 
                         case "Textbox":
                             let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempTextBox);
-                            tempTextBox.placeWidget(this.widgets.length - 1);
+                            tempTextBox.placeWidget();
                             break;
 
                         default:
@@ -200,7 +200,7 @@
             }
 
             // Allows the widget object to edit its respective HTML element
-            placeWidget(arr_id) {
+            placeWidget() {
                 let pos = this.canvas.getPosition();
                 this.image.style.resize = "none";
                 this.image.style.position = "absolute";
@@ -208,14 +208,14 @@
                 this.image.style.height = this.height + 'px';
                 this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
                 this.image.style.top = String(150 + parseInt(this.y)) + 'px';
-                this.image.onclick = function() { alert("The WidgetID is " + arr_id); };
-                this.image.addEventListener('contextmenu', function(ev) {
-                    ev.preventDefault();
-                    alert('Widget Deleted!');
-                    this.style.visibility = "hidden";
-                    inter.widgets[arr_id].updateVisibility()
-                    return false;
-                }, false);
+                // this.image.onclick = function() { alert("The WidgetID is " + arr_id); };
+                // this.image.addEventListener('contextmenu', function(ev) {
+                //     ev.preventDefault();
+                //     alert('Widget Deleted!');
+                //     this.style.visibility = "hidden";
+                //     inter.widgets[arr_id].updateVisibility()
+                //     return false;
+                // }, false);
                     /*
                 NOTE:
                 154 is a static value we are using rather than the canvas' rectangle's position.
@@ -251,20 +251,36 @@
 
         // Label widget class
         class Label extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas, visibility) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility, widget_id) {
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Label";
                 this.image = document.createElement("div");
+                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
+                this.image.addEventListener('contextmenu', function(ev) {
+                    ev.preventDefault();
+                    alert('Widget Deleted!');
+                    this.style.visibility = "hidden";
+                    inter.widgets[widget_id].updateVisibility()
+                    return false;
+                }, false);
                 document.getElementById("widgets").appendChild(this.image);
             }
         }
 
         // Button widget class
         class Button extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas, visibility) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility, widget_id) {
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Button";
                 this.image = document.createElement("button");
+                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
+                this.image.addEventListener('contextmenu', function(ev) {
+                    ev.preventDefault();
+                    alert('Widget Deleted!');
+                    this.style.visibility = "hidden";
+                    inter.widgets[widget_id].updateVisibility()
+                    return false;
+                }, false);
                 document.getElementById("widgets").appendChild(this.image);
             }
         }
@@ -280,6 +296,7 @@
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "checkbox");
                 this.image.addEventListener('change', alert_id);
+                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
                 this.image.addEventListener('contextmenu', function(ev) {
                     ev.preventDefault();
                     alert('Widget Deleted!');
@@ -314,6 +331,7 @@
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "radio");
                 this.image.addEventListener('click', alert_id);
+                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
                 this.image.addEventListener('contextmenu', function(ev) {
                     ev.preventDefault();
                     alert('Widget Deleted!');
@@ -348,6 +366,7 @@
                 this.image = document.createElement("textarea");
                 this.image.setAttribute("type", "text");
                 this.image.addEventListener('click', alert_id);
+                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
                 this.image.addEventListener('contextmenu', function(ev) {
                     ev.preventDefault();
                     alert('Widget Deleted!');
