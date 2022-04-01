@@ -296,7 +296,6 @@
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "checkbox");
                 this.image.addEventListener('change', alert_id);
-                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
                 this.image.addEventListener('contextmenu', function(ev) {
                     ev.preventDefault();
                     alert('Widget Deleted!');
@@ -331,7 +330,6 @@
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "radio");
                 this.image.addEventListener('click', alert_id);
-                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
                 this.image.addEventListener('contextmenu', function(ev) {
                     ev.preventDefault();
                     alert('Widget Deleted!');
@@ -366,7 +364,6 @@
                 this.image = document.createElement("textarea");
                 this.image.setAttribute("type", "text");
                 this.image.addEventListener('click', alert_id);
-                this.image.onclick = function() { alert("The WidgetID is " + widget_id); };
                 this.image.addEventListener('contextmenu', function(ev) {
                     ev.preventDefault();
                     alert('Widget Deleted!');
