@@ -268,7 +268,6 @@ def signup(request):
     def namecheck(name):
         name_format = allinclude(name, string.ascii_letters + " ") #accept letters and space as well
         name_range=length(name,2,26)#some identification cards have this range for name length
-        name = capitalize(name)
         return (name_format and name_range)
 
 
@@ -297,7 +296,7 @@ def signup(request):
         username_range= length(username, 8, 20)
         return (username_format and unique and username_range)
 
-    def save(name, username, password):
+    def save(name,username, password):
         sql = "INSERT INTO user_details (username,name, password) VALUES (%s,%s,%s)"
         val = (username, name, password)
         mycursor.execute(sql,val)
@@ -308,7 +307,7 @@ def signup(request):
     pass2 = request.POST.get('regis_password2')
 
     reg_incorrect = {'name': True, 'username': True, 'password1': True, 'password2': True, 'unique': False}
-    
+    name = capitalize(name)
     if namecheck(name):
         reg_incorrect['name'] = False
     if usernamecheck(username):
