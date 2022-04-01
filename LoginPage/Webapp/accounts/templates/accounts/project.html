@@ -10,7 +10,7 @@
     <title>Project</title>
     <link rel="shortcut icon" href="{% static '../static/accounts/logo.ico' %}"/>
     <script type="text/javascript">
-         // Interface class used to manage the script and I/O
+        // Interface class used to manage the script and I/O
         class Interface {
             constructor() {
                 this.widgets = [];
@@ -28,31 +28,31 @@
                     switch (widgetType) {
                         // Chooses which type of widget to create
                         case "Label":
-                            let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas);
+                            let tempLabel = new Label(width, height, x, y, colour, layer, text, this.canvas, true);
                             this.widgets.push(tempLabel);
                             tempLabel.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Button":
-                            let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas);
+                            let tempButton = new Button(width, height, x, y, colour, layer, text, this.canvas, true);
                             this.widgets.push(tempButton);
                             tempButton.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Checkbox":
-                            let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas, this.widgets.length);
+                            let tempCheckBox = new CheckBox(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempCheckBox);
                             tempCheckBox.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Radiobutton":
-                            let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas, this.widgets.length);
+                            let tempRadioButton = new RadioButton(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempRadioButton);
                             tempRadioButton.placeWidget(this.widgets.length - 1);
                             break;
 
                         case "Textbox":
-                            let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas, this.widgets.length);
+                            let tempTextBox = new TextBox(width, height, x, y, colour, layer, text, this.canvas, true, this.widgets.length);
                             this.widgets.push(tempTextBox);
                             tempTextBox.placeWidget(this.widgets.length - 1);
                             break;
@@ -99,15 +99,17 @@
                 // Adding widgets to project's JSON
                 widgetJSON += '"widgets" : [';
                 for (let i = 0; i < this.widgets.length; i++) {
-                    widgetJSON += '{ '+
-                                    '"widgetType":"' + String(this.widgets[i].widgetType) + '" , ' +
-                                    '"width":"' + String(this.widgets[i].width) + '" , ' +
-                                    '"height":"' + String(this.widgets[i].height) + '" , ' +
-                                    '"x":"' + String(this.widgets[i].x) + '" , ' +
-                                    '"y":"' + String(this.widgets[i].y) + '" , ' +
-                                    '"colour":"' + String(this.widgets[i].colour) + '" , ' +
-                                    '"layer":"' + String(this.widgets[i].layer) + '" , ' +
-                                    '"text":"' + String(this.widgets[i].text) + '" } , ';
+                    if(this.widgets[i].visibility != false){
+                        widgetJSON += '{ '+
+                                        '"widgetType":"' + String(this.widgets[i].widgetType) + '" , ' +
+                                        '"width":"' + String(this.widgets[i].width) + '" , ' +
+                                        '"height":"' + String(this.widgets[i].height) + '" , ' +
+                                        '"x":"' + String(this.widgets[i].x) + '" , ' +
+                                        '"y":"' + String(this.widgets[i].y) + '" , ' +
+                                        '"colour":"' + String(this.widgets[i].colour) + '" , ' +
+                                        '"layer":"' + String(this.widgets[i].layer) + '" , ' +
+                                        '"text":"' + String(this.widgets[i].text) + '" } , ';
+                    }
                 }
                 if (this.widgets.length != 0) {
                     widgetJSON = widgetJSON.slice(0, -3);
@@ -185,7 +187,7 @@
 
         // Widget class used to create interface elements (other types of widget will inherit)
         class Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility) {
                 this.width = width;
                 this.height = height;
                 this.x = x;
@@ -194,6 +196,7 @@
                 this.layer = layer;
                 this.text = text;
                 this.canvas = canvas;
+                this.visibility = true;
             }
 
             // Allows the widget object to edit its respective HTML element
@@ -206,7 +209,14 @@
                 this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
                 this.image.style.top = String(150 + parseInt(this.y)) + 'px';
                 this.image.onclick = function() { alert("The WidgetID is " + arr_id); };
-                /*
+                this.image.addEventListener('contextmenu', function(ev) {
+                    ev.preventDefault();
+                    alert('Widget Deleted!');
+                    this.style.visibility = "hidden";
+                    inter.widgets[arr_id].updateVisibility()
+                    return false;
+                }, false);
+                    /*
                 NOTE:
                 154 is a static value we are using rather than the canvas' rectangle's position.
                 This is due to how the getBoundingClientRect() method works when the page scrolls.
@@ -233,11 +243,15 @@
                     this.placeWidget();
                 }
             }
+
+            updateVisibility(){
+                this.visibility = false;
+            }
         }
 
         // Label widget class
         class Label extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility) {
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Label";
                 this.image = document.createElement("div");
@@ -247,7 +261,7 @@
 
         // Button widget class
         class Button extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility) {
                 super(width, height, x, y, colour, layer, text, canvas);
                 this.widgetType = "Button";
                 this.image = document.createElement("button");
@@ -257,7 +271,7 @@
 
         // Check box widget class
         class CheckBox extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas, widget_id) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility, widget_id) {
                 function alert_id(){
                     alert("The WidgetID is " + widget_id);
                 }
@@ -266,6 +280,13 @@
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "checkbox");
                 this.image.addEventListener('change', alert_id);
+                this.image.addEventListener('contextmenu', function(ev) {
+                    ev.preventDefault();
+                    alert('Widget Deleted!');
+                    this.style.visibility = "hidden";
+                    inter.widgets[widget_id].updateVisibility()
+                    return false;
+                }, false);
                 document.getElementById("widgets").appendChild(this.image);
             }
 
@@ -284,7 +305,7 @@
 
         // Radio button widget class
         class RadioButton extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas, widget_id) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility, widget_id) {
                 function alert_id(){
                     alert("The WidgetID is " + widget_id);
                 }
@@ -293,6 +314,13 @@
                 this.image = document.createElement("input");
                 this.image.setAttribute("type", "radio");
                 this.image.addEventListener('click', alert_id);
+                this.image.addEventListener('contextmenu', function(ev) {
+                    ev.preventDefault();
+                    alert('Widget Deleted!');
+                    this.style.visibility = "hidden";
+                    inter.widgets[widget_id].updateVisibility()
+                    return false;
+                }, false);
                 document.getElementById("widgets").appendChild(this.image);
             }
 
@@ -311,7 +339,7 @@
 
         // Text box widget class
         class TextBox extends Widget {
-            constructor(width, height, x, y, colour, layer, text, canvas, widget_id) {
+            constructor(width, height, x, y, colour, layer, text, canvas, visibility, widget_id) {
                 function alert_id(){
                     alert("The WidgetID is " + widget_id);
                 }
@@ -320,6 +348,13 @@
                 this.image = document.createElement("textarea");
                 this.image.setAttribute("type", "text");
                 this.image.addEventListener('click', alert_id);
+                this.image.addEventListener('contextmenu', function(ev) {
+                    ev.preventDefault();
+                    alert('Widget Deleted!');
+                    this.style.visibility = "hidden";
+                    inter.widgets[widget_id].updateVisibility()
+                    return false;
+                }, false);
                 document.getElementById("widgets").appendChild(this.image);
             }
 
@@ -920,56 +955,59 @@
                                         var element_name = searchEles[i].tagName;
                                         var element_type = searchEles[i].getAttribute("type");
 
-                                        if(element_name == "DIV"){
-                                            var txt = element.innerHTML;
-                                            var wid = element.style.width;
-                                            wid = wid.slice(0, -2);
-                                            var hei = element.style.height;
-                                            hei = hei.slice(0, -2);
-                                            var coord_y = element.getBoundingClientRect().top - 150;
-                                            var coord_x = element.getBoundingClientRect().left - 270;
-                                            var bg_rgb = element.style.backgroundColor;
-                                            var col = rgb2hex(bg_rgb);
-                                            python_code += "widget" + i + " = tk.Label(window, anchor = \"nw\", compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
-                                        }
-                                        else if(element_name == "BUTTON"){
-                                            var txt = element.innerHTML;
-                                            var wid = element.style.width;
-                                            wid = wid.slice(0, -2);
-                                            var hei = element.style.height;
-                                            hei = hei.slice(0, -2);
-                                            var coord_y = element.getBoundingClientRect().top - 150;
-                                            var coord_x = element.getBoundingClientRect().left - 270
-                                            var bg_rgb = element.style.backgroundColor;
-                                            var col = rgb2hex(bg_rgb);
-                                            python_code += "widget" + i + " = tk.Button(window, compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
-                                        }
-                                        else if(element_name == "TEXTAREA"){
-                                            var wid = element.style.width;
-                                            wid = wid.slice(0, -2);
-                                            var hei = element.style.height;
-                                            hei = hei.slice(0, -2);
-                                            var coord_y = element.getBoundingClientRect().top - 150;
-                                            var coord_x = element.getBoundingClientRect().left - 270
-                                            python_code += "widget" + i + " = tk.Entry(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ", width = " + wid +")\n";
-                                        }
-                                        else if(element_type == "checkbox"){
-                                            var wid = element.style.width;
-                                            wid = wid.slice(0, -2);
-                                            var hei = element.style.height;
-                                            hei = hei.slice(0, -2);
-                                            var coord_y = element.getBoundingClientRect().top - 150;
-                                            var coord_x = element.getBoundingClientRect().left - 270
-                                            python_code += "widget" + i + " = tk.Checkbutton(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
-                                        }
-                                        else if(element_type == "radio"){
-                                            var wid = element.style.width;
-                                            wid = wid.slice(0, -2);
-                                            var hei = element.style.height;
-                                            hei = hei.slice(0, -2);
-                                            var coord_y = element.getBoundingClientRect().top - 150;
-                                            var coord_x = element.getBoundingClientRect().left - 270
-                                            python_code += "widget" + i + " = tk.Radiobutton(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                        if(element.style.visibility != "hidden"){
+
+                                            if(element_name == "DIV"){
+                                                var txt = element.innerHTML;
+                                                var wid = element.style.width;
+                                                wid = wid.slice(0, -2);
+                                                var hei = element.style.height;
+                                                hei = hei.slice(0, -2);
+                                                var coord_y = element.getBoundingClientRect().top - 150;
+                                                var coord_x = element.getBoundingClientRect().left - 270;
+                                                var bg_rgb = element.style.backgroundColor;
+                                                var col = rgb2hex(bg_rgb);
+                                                python_code += "widget" + i + " = tk.Label(window, anchor = \"nw\", compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                            }
+                                            else if(element_name == "BUTTON"){
+                                                var txt = element.innerHTML;
+                                                var wid = element.style.width;
+                                                wid = wid.slice(0, -2);
+                                                var hei = element.style.height;
+                                                hei = hei.slice(0, -2);
+                                                var coord_y = element.getBoundingClientRect().top - 150;
+                                                var coord_x = element.getBoundingClientRect().left - 270
+                                                var bg_rgb = element.style.backgroundColor;
+                                                var col = rgb2hex(bg_rgb);
+                                                python_code += "widget" + i + " = tk.Button(window, compound = \"c\", image = pixel, bg = \"" + col + "\", width = " + wid + ", height = " + hei + ", text = \"" + txt + "\")\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                            }
+                                            else if(element_name == "TEXTAREA"){
+                                                var wid = element.style.width;
+                                                wid = wid.slice(0, -2);
+                                                var hei = element.style.height;
+                                                hei = hei.slice(0, -2);
+                                                var coord_y = element.getBoundingClientRect().top - 150;
+                                                var coord_x = element.getBoundingClientRect().left - 270
+                                                python_code += "widget" + i + " = tk.Entry(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ", width = " + wid +")\n";
+                                            }
+                                            else if(element_type == "checkbox"){
+                                                var wid = element.style.width;
+                                                wid = wid.slice(0, -2);
+                                                var hei = element.style.height;
+                                                hei = hei.slice(0, -2);
+                                                var coord_y = element.getBoundingClientRect().top - 150;
+                                                var coord_x = element.getBoundingClientRect().left - 270
+                                                python_code += "widget" + i + " = tk.Checkbutton(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                            }
+                                            else if(element_type == "radio"){
+                                                var wid = element.style.width;
+                                                wid = wid.slice(0, -2);
+                                                var hei = element.style.height;
+                                                hei = hei.slice(0, -2);
+                                                var coord_y = element.getBoundingClientRect().top - 150;
+                                                var coord_x = element.getBoundingClientRect().left - 270
+                                                python_code += "widget" + i + " = tk.Radiobutton(window)\nwidget" + i + ".place(x = " + coord_x + ", y = " + coord_y + ")\n";
+                                            }
                                         }
                                     }
                                     python_code = boiler_plate_beginning + python_code + boiler_plate_ending;
