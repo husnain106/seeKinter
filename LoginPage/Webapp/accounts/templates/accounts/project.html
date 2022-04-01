@@ -208,15 +208,7 @@
                 this.image.style.height = this.height + 'px';
                 this.image.style.left = String(parseInt(pos.left) + parseInt(this.x)) + 'px';
                 this.image.style.top = String(150 + parseInt(this.y)) + 'px';
-                // this.image.onclick = function() { alert("The WidgetID is " + arr_id); };
-                // this.image.addEventListener('contextmenu', function(ev) {
-                //     ev.preventDefault();
-                //     alert('Widget Deleted!');
-                //     this.style.visibility = "hidden";
-                //     inter.widgets[arr_id].updateVisibility()
-                //     return false;
-                // }, false);
-                    /*
+                /*
                 NOTE:
                 154 is a static value we are using rather than the canvas' rectangle's position.
                 This is due to how the getBoundingClientRect() method works when the page scrolls.
@@ -817,12 +809,6 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a>Height
-                                        <br>
-                                        <input type="text" id="textboxHeight"/>
-                                    </a>
-                                </li>
-                                <li>
                                     <a>X Position
                                         <br>
                                         <input type="text" id="textboxX"/>
@@ -842,12 +828,12 @@
                                 </li>
                                 <li>
                                     <a>
-                                        <button type="button" onclick="inter.addWidget(document.getElementById('textboxWidth').value, document.getElementById('textboxHeight').value, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null, 'Textbox')">Place</button>
+                                        <button type="button" onclick="inter.addWidget(document.getElementById('textboxWidth').value, null, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null, 'Textbox')">Place</button>
                                     </a>
                                 </li>
                                 <li>
                                     <a>
-                                        <button type="button" onclick="inter.widgets[document.getElementById('textboxWidgetID').value].update(document.getElementById('textboxWidth').value, document.getElementById('textboxHeight').value, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null)">Update</button>
+                                        <button type="button" onclick="inter.widgets[document.getElementById('textboxWidgetID').value].update(document.getElementById('textboxWidth').value, null, document.getElementById('textboxX').value, document.getElementById('textboxY').value, null, 0, null)">Update</button>
                                     </a>
                                 </li>
                             </ul>
