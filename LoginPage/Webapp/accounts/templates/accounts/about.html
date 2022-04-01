@@ -34,7 +34,8 @@
       }
 
       .logo {
-        margin-bottom: 60px;
+        margin-top: 10px;
+        margin-bottom: 40px;
       }
 
       .description {
@@ -52,18 +53,37 @@
         font-weight:30;
         font-size: 40px;
       }
+
+      .row {
+        display: flex;
+        margin-top: 60px;
+      }
+
+      .col {
+        text-align: center;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .jumbotron {
+        margin-top: 10px;
+        margin-bottom: 0 ;
+        padding: 30px 0;
+        width: 100%;
+
+      }
           
     </style>
   </head>
 
   <body>
     <div class="aboutpage">
-      <a>
+      <a href="/">
         <img
           src="{% static '../static/accounts/logo.png' %}"
           class="logo"
           alt="seekinter"
-          width="450px"
+          width="300px"
       /></a>
 
       <div class="description">
@@ -80,47 +100,46 @@
       </div>
     </div>
     
-      <div class="aboutpage">
+    <div class="aboutpage">
+      
+      <div class="description">
+        <p class="introduction-title">How to use</p>
         
-        <div class="description">
-          <p class="introduction-title">How to use</p>
-          
-              <li class="list-group-item">Sign up and login in or Visit as a Guest</li>
-              <li class="list-group-item">Create a new project or Edit your saved project</li>
-              <li class="list-group-item">Add widgets or edit canvas</li>
-              <li class="list-group-item">Export to Json or Python file and run in terminal</li>
-            </ul>
-              
-          
+            <li class="list-group-item">Sign up and login in or Visit as a Guest</li>
+            <li class="list-group-item">Create a new project or Edit your saved project</li>
+            <li class="list-group-item">Add widgets or edit canvas</li>
+            <li class="list-group-item">Export to Json or Python file and run in terminal</li>
+          </ul>
+            
         
+      
+      </div>
+    </div>
+  
+
+    <div class="row">
+      <div class="col">
+        <div class="text-primary">
+        <h3>Convenient</h3>
+        </div>
+      </div> 
+      <div class="col">
+        <div class="text-primary">
+        <h3>Efficient</h3>
         </div>
       </div>
-   
-    <div class="container">
-        <div class="row">
-          <div class="col-sm-3">
-            <div class="text-primary">
-            <h3>Convenient</h3>
-            </div>
-            
-          </div>
-          <div class="col-sm-3">
-            <div class="text-primary">
-            <h3>Efficient</h3>
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <div class="text-primary">
-            <h3>Accurate</h3>    
-            </div>    
-            
-          </div>
-          <div class="col-sm-3">
-            <div class="text-primary">
-            <h3>Practical</h3> 
-            </div>       
-          </div>
-        </div>
+      <div class="col">
+        <div class="text-primary">
+        <h3>Accurate</h3>    
+        </div>    
+      </div>
+      <div class="col">
+        <div class="text-primary">
+        <h3>Practical</h3> 
+        </div>       
+      </div>
+    </div>
+
     <div class="jumbotron text-center">
           <div class="text-primary">
           <h1>What you dont' see, you don't get!</h1>
