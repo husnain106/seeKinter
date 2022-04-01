@@ -124,7 +124,7 @@ def duplicate_project(request, param):
     mycursor.execute("SELECT * FROM projects WHERE project_id = %s", (param,))
     cur_proj= mycursor.fetchone()
     sql="INSERT INTO projects (project_name, JSON_encoding) VALUES (%s, %s)"
-    copy_name = "copy" + str(cur_proj[1])
+    copy_name = "copy " + str(cur_proj[1])
     val=(copy_name, cur_proj[2])
     mycursor.execute(sql,val)
     mycursor.execute("INSERT INTO user_access (project_id, username) VALUES (%s,%s)", (mycursor.lastrowid,uname))
@@ -176,7 +176,6 @@ def file(request, param):
         currentopen_projectid = current_project[0]
         currentopen_projectname = current_project[1]
         json_string = current_project[2]
-        print(json_string)
         return render(request, 'accounts/project_saved.html', globals()) # redirect to a dummy template
     else:
         return render(request, 'accounts/file_error.html')

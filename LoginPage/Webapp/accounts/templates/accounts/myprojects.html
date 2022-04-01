@@ -290,7 +290,7 @@
         <!-- when doubleclick, redirect to myprojects/file/projectId -->
         <div class='user-project-link' type='button' id='project_saved/{{item.id}}' onclick='window.location = id'>
           <div class='card-body'>
-            <input disabled class='pojcet-title' id='title{{item.id}}' value={{item.name}}>
+            <input disabled class='pojcet-title' id='title{{item.id}}' value='{{item.name}}'>
           </div>
         </div>
 
@@ -301,7 +301,7 @@
           <ul class='dropdown-menu project-menu' aria-labelledby='projectDropdown1'>
             <!-- <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_self'>Open</a></li>
             <li><a class='dropdown-item project-item' href='file/{{item.id}}' target='_blank'>Open in new tab</a></li> -->
-            <li><hr class='dropdown-divider'></li>
+            <!-- <li><hr class='dropdown-divider'></li> -->
             <!-- <li class='dropdown-item project-item' type ='button' id='rename{{item.id}}' value={{item.id}} onclick='rename_projects(value)'>Rename</li> -->
             <a href="duplicate-project/{{item.id}}"><li class='dropdown-item project-item' type ='button' id='copy{{item.id}}' value={{item.id}}>Duplicate</li></a>
             <a href="delete-project/{{item.id}}"><li class='dropdown-item project-item' type ='button' id='delete{{item.id}}' value={{item.id}}>Delete</li></a>
